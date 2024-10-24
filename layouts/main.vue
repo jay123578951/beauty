@@ -1,0 +1,5 @@
+<template>
+  <Navigation />
+
+  <slot />
+</template>
