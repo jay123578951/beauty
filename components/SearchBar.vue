@@ -25,7 +25,7 @@ watch(
 
 function handleSubmit() {
   navigateTo({
-    path: "/search",
+    path: "/salon",
     query: {
       store: localFormValue.store,
       location: localFormValue.location,

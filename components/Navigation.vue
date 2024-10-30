@@ -64,7 +64,7 @@ function handleHomeButton() {
         <NuxtLink to="/recommend" class="text-sm leading-6 text-gray-900"
           >推薦</NuxtLink
         >
-        <NuxtLink to="/search" class="text-sm leading-6 text-gray-900"
+        <NuxtLink to="/salon" class="text-sm leading-6 text-gray-900"
           >沙龍檢索</NuxtLink
         >
         <NuxtLink to="/collect" class="text-sm leading-6 text-gray-900"

@@ -47,7 +47,7 @@ definePageMeta({
   </main>
 </template>
 
-<style>
+<style scoped>
 .background-main {
   background-image: url("/assets/img/indexBanner.jpg");
 }
