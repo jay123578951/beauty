@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, defineProps, defineEmits, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 
 const popover = ref({
   visibility: "click",

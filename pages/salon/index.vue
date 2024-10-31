@@ -647,7 +647,7 @@ onMounted(() => {
           </ul>
         </fieldset>
       </section>
-      <section class="ml-4 h-screen w-[76%]">
+      <section class="ml-8 h-screen w-[76%]">
         <div class="mb-4 flex items-center justify-between">
           <p class="text-lg font-medium">沙龍一覽：114件</p>
           <div class="inline-flex rounded-md shadow-sm" role="group">
@@ -746,7 +746,7 @@ onMounted(() => {
                 <!-- Item 1 -->
                 <div class="hidden duration-700 ease-in-out" data-carousel-item>
                   <img
-                    src="/assets/img/indexBanner.jpg"
+                    src="/assets/img/salonBanner.jpg"
                     class="absolute left-1/2 top-1/2 block h-full w-full -translate-x-1/2 -translate-y-1/2 object-cover"
                     alt="..."
                   />
@@ -887,10 +887,10 @@ onMounted(() => {
                   4.95
                 </p>
               </div>
-              <p class="mb-4">
+              <p class="mb-4 text-sm">
                 我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。
               </p>
-              <ul class="text-gray-500">
+              <ul class="text-sm text-gray-500">
                 <li class="mb-1 flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -983,7 +983,7 @@ onMounted(() => {
                 <!-- Item 1 -->
                 <div class="hidden duration-700 ease-in-out" data-carousel-item>
                   <img
-                    src="/assets/img/indexBanner.jpg"
+                    src="/assets/img/salonBanner.jpg"
                     class="absolute left-1/2 top-1/2 block h-full w-full -translate-x-1/2 -translate-y-1/2 object-cover"
                     alt="..."
                   />
@@ -1118,10 +1118,10 @@ onMounted(() => {
                   4.95
                 </p>
               </div>
-              <p class="mb-4">
+              <p class="mb-4 text-sm">
                 我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。
               </p>
-              <ul class="text-gray-500">
+              <ul class="text-sm text-gray-500">
                 <li class="mb-1 flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
