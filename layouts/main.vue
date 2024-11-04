@@ -1,11 +1,11 @@
 <template>
-  <Navigation />
+  <div class="bg-[#F4F1EC] pb-4">
+    <Navigation />
 
-  <section class="flex justify-center">
-    <div class="w-full">
+    <section>
       <slot />
-    </div>
-  </section>
+    </section>
 
-  <Footer />
+    <Footer />
+  </div>
 </template>

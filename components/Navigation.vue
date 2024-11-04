@@ -12,19 +12,18 @@ function handleHomeButton() {
 </script>
 
 <template>
-  <header class="mb-4 rounded-2xl bg-gray-100">
-    <nav
-      class="mx-auto flex max-w-7xl items-center justify-between p-4"
-      aria-label="Global"
-    >
-      <div class="flex lg:flex-1">
+  <header
+    class="sticky top-0 z-40 flex w-full items-center justify-between px-4 py-8"
+  >
+    <nav class="bg-primary flex items-center rounded-full p-1 drop-shadow-xl">
+      <div class="mr-2 flex rounded-full bg-[#F4F1EC] p-3 lg:flex-1">
         <a href="#" class="-m-1.5 p-1.5" @click.prevent="handleHomeButton">
           <span class="sr-only">Your Company</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="size-8"
+            class="text-primary-dark size-[34px]"
           >
             <path
               fill-rule="evenodd"
@@ -37,54 +36,46 @@ function handleHomeButton() {
           </svg>
         </a>
       </div>
-      <div class="flex lg:hidden">
-        <button
-          type="button"
-          class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-        >
-          <svg
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-            data-slot="icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-          <span class="sr-only">Open main menu</span>
-        </button>
+      <div class="w-full" id="navbar-default">
+        <ul class="flex gap-x-12 px-8 leading-6 text-gray-900">
+          <li>
+            <NuxtLink to="/recommend" class="text-gray-900 hover:text-gray-600"
+              >推薦</NuxtLink
+            >
+          </li>
+          <li>
+            <NuxtLink to="/salon" class="text-gray-900 hover:text-gray-600"
+              >沙龍檢索</NuxtLink
+            >
+          </li>
+          <li>
+            <NuxtLink to="/collect" class="text-gray-900 hover:text-gray-600"
+              >收藏</NuxtLink
+            >
+          </li>
+          <li>
+            <NuxtLink to="/history" class="text-gray-900 hover:text-gray-600"
+              >預約履歷</NuxtLink
+            >
+          </li>
+        </ul>
       </div>
-      <div class="hidden lg:flex lg:gap-x-12">
-        <NuxtLink to="/recommend" class="text-sm leading-6 text-gray-900"
-          >推薦</NuxtLink
-        >
-        <NuxtLink to="/salon" class="text-sm leading-6 text-gray-900"
-          >沙龍檢索</NuxtLink
-        >
-        <NuxtLink to="/collect" class="text-sm leading-6 text-gray-900"
-          >收藏</NuxtLink
-        >
-        <NuxtLink to="/history" class="text-sm leading-6 text-gray-900"
-          >預約履歷</NuxtLink
-        >
-      </div>
+    </nav>
+
+    <nav class="w-fit rounded-full bg-white drop-shadow-xl" aria-label="Global">
       <PopoverGroup class="hidden lg:flex lg:flex-1 lg:justify-end">
         <Popover class="relative">
-          <PopoverButton class="flex text-sm leading-6 text-gray-900">
-            <div class="mr-1">
+          <PopoverButton
+            class="flex items-center rounded-full bg-[#D0C6B6] p-1 leading-6 text-gray-900"
+          >
+            <div class="bg-primary-light mr-2 rounded-full p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                stroke-width="0.6"
                 stroke="currentColor"
-                class="size-6"
+                class="size-10 text-[#23262C]"
               >
                 <path
                   stroke-linecap="round"
@@ -93,7 +84,9 @@ function handleHomeButton() {
                 />
               </svg>
             </div>
-            登入
+            <span class="rounded-full bg-[#23262C] px-12 py-4 text-white"
+              >登入</span
+            >
           </PopoverButton>
 
           <transition
@@ -159,136 +152,5 @@ function handleHomeButton() {
         </Popover>
       </PopoverGroup>
     </nav>
-    <!-- Mobile menu, show/hide based on menu open state. -->
-    <div class="lg:hidden" role="dialog" aria-modal="true">
-      <!-- Background backdrop, show/hide based on slide-over state. -->
-      <div class="fixed inset-0 z-10"></div>
-      <div
-        class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
-      >
-        <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">Your Company</span>
-            <img
-              class="h-8 w-auto"
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-              alt=""
-            />
-          </a>
-          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-            <span class="sr-only">Close menu</span>
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-              data-slot="icon"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18 18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        <div class="mt-6 flow-root">
-          <div class="-my-6 divide-y divide-gray-500/10">
-            <div class="space-y-2 py-6">
-              <div class="-mx-3">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  aria-controls="disclosure-1"
-                  aria-expanded="false"
-                >
-                  Product
-                  <!--
-                          Expand/collapse icon, toggle classes based on menu open state.
-    
-                          Open: "rotate-180", Closed: ""
-                        -->
-                  <svg
-                    class="h-5 w-5 flex-none"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    data-slot="icon"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <!-- 'Product' sub-menu, show/hide based on menu state. -->
-                <div class="mt-2 space-y-2" id="disclosure-1">
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Analytics</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Engagement</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Security</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Integrations</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Automations</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Watch demo</a
-                  >
-                  <a
-                    href="#"
-                    class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    >Contact sales</a
-                  >
-                </div>
-              </div>
-              <a
-                href="#"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >Features</a
-              >
-              <a
-                href="#"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >Marketplace</a
-              >
-              <a
-                href="#"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >Company</a
-              >
-            </div>
-            <div class="py-6">
-              <a
-                href="#"
-                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >Log in</a
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </header>
 </template>

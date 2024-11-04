@@ -33,10 +33,16 @@ onMounted(() => {
 <template>
   <NuxtLayout name="salon">
     <template #searchBar>
-      <SearchBar
-        :formValue="searchData"
-        @update:form-value="handleSearchDataUpdate"
-      />
+      <div
+        class="flex min-h-[20vh] items-end justify-center rounded-2xl bg-[#D0C6B6] p-4"
+      >
+        <div class="flex w-full max-w-7xl rounded-2xl bg-white p-3">
+          <SearchBar
+            :formValue="searchData"
+            @update:form-value="handleSearchDataUpdate"
+          />
+        </div>
+      </div>
     </template>
     <template #content>
       <section class="w-[24%] space-y-4 rounded-2xl border border-gray-300 p-4">
