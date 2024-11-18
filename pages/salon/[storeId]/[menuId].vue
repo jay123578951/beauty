@@ -59,24 +59,24 @@ const calendarOptions = ref({
   initialEvents: [
     {
       title: "已預約",
-      start: "2024-10-28T12:00:00",
-      end: "2024-10-28T13:00:00",
+      start: "2024-11-11T12:00:00",
+      end: "2024-11-11T13:00:00",
       extendedProps: {
         icon: "@",
       },
     },
     {
       title: "已預約",
-      start: "2024-10-28T13:00:00",
-      end: "2024-10-28T14:00:00",
+      start: "2024-11-11T13:00:00",
+      end: "2024-11-11T14:00:00",
       extendedProps: {
         icon: "@",
       },
     },
     {
       title: "已預約",
-      start: "2024-10-29T14:00:00",
-      end: "2024-10-29T15:00:00",
+      start: "2024-11-12T14:00:00",
+      end: "2024-11-12T15:00:00",
       extendedProps: {
         icon: "@",
       },
@@ -96,13 +96,13 @@ const calendarOptions = ref({
 });
 
 definePageMeta({
-  layout: "main",
+  layout: "page",
 });
 </script>
 
 <template>
-  <div class="m-auto mt-4 flex max-w-7xl">
-    <section class="h-fit w-[24%] rounded-2xl border border-gray-200">
+  <div class="flex">
+    <div class="h-fit w-[24%] rounded-2xl border border-gray-200">
       <div>
         <div class="p-4">
           <div class="mb-2">
@@ -161,8 +161,8 @@ definePageMeta({
           </ul>
         </div>
       </div>
-    </section>
-    <section class="ml-8 w-[76%]">
+    </div>
+    <div class="ml-8 w-[76%]">
       <div class="mb-4">
         <p class="mb-1 text-2xl font-medium">選擇來店的時間</p>
         <p class="text-sm">可以選擇指定的設計師，並在想要的時間內點擊預約！</p>
@@ -264,7 +264,7 @@ definePageMeta({
       <div>
         <FullCalendar :options="calendarOptions" />
       </div>
-    </section>
+    </div>
   </div>
 </template>
 

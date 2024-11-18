@@ -1,17 +1,21 @@
 <template>
-  <div>
+  <div class="h-screen bg-primary-light">
     <Navigation />
 
-    <section class="mx-4 mb-8 mt-24">
-      <slot name="searchBar" />
-    </section>
+    <!-- <section class="fixed top-0 z-0">
+      <slot name="maps" />
+    </section> -->
 
-    <section class="flex justify-center">
-      <div class="flex w-full max-w-7xl">
+    <!-- <section class="relative z-10 mx-4 mb-8">
+      <slot name="searchBar" />
+    </section> -->
+
+    <section class="relative z-0 flex justify-center">
+      <div class="mx-4 flex w-full">
         <slot name="content" />
       </div>
     </section>
 
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>

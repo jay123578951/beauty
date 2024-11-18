@@ -49,7 +49,6 @@ function handleSubmit() {
             name="store"
             id="store"
             class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            required
           />
         </div>
       </div>
@@ -60,7 +59,7 @@ function handleSubmit() {
             v-model="localFormValue.location"
             id="location"
             name="location"
-            class="block w-full appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full cursor-pointer appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
             <option>不指定</option>
             <option>台北市</option>
@@ -106,7 +105,7 @@ function handleSubmit() {
             v-model="localFormValue.service"
             id="service"
             name="service"
-            class="block w-full appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full cursor-pointer appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
             <option>不指定</option>
             <option>剪髮</option>
@@ -116,7 +115,7 @@ function handleSubmit() {
       </div>
       <div class="mb-6 flex flex-1 items-end px-3 md:mb-0 md:w-1/3">
         <button
-          class="focus:shadow-outline bg-primary-dark relative w-full rounded px-4 py-[7px] text-white hover:bg-gray-700 focus:outline-none"
+          class="focus:shadow-outline relative w-full rounded rounded-md bg-primary-dark px-4 py-[7px] text-white hover:bg-gray-700 focus:outline-none"
           type="submit"
         >
           搜尋
