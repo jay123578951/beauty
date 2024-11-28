@@ -93,7 +93,7 @@ const stores = reactive([
   {
     id: "1",
     position: { lat: 25.0626695, lng: 121.5238994 },
-    img: new URL("../../assets/img/recommend01.jpg", import.meta.url).href,
+    img: "/img/recommend01.jpg",
     name: "ALBUM 台北",
     rating: 4.5,
     description:
@@ -105,7 +105,7 @@ const stores = reactive([
   {
     id: "2",
     position: { lat: 25.0504883, lng: 121.51957 },
-    img: new URL("../../assets/img/recommend02.jpg", import.meta.url).href,
+    img: "/img/recommend02.jpg",
     name: "Belle 中山",
     rating: 4.2,
     description:
@@ -117,7 +117,7 @@ const stores = reactive([
   {
     id: "3",
     position: { lat: 25.0562623, lng: 121.5173593 },
-    img: new URL("../../assets/img/recommend05.jpg", import.meta.url).href,
+    img: "/img/recommend05.jpg",
     name: "Blossom 中山",
     rating: 4.1,
     description:
@@ -258,7 +258,6 @@ onMounted(() => {
               <NuxtLink
                 :to="`/salon/${store.id}`"
                 class="flex cursor-pointer rounded-3xl border border-slate-300"
-                @click="changePosition(store.position)"
               >
                 <img
                   :src="store.img"

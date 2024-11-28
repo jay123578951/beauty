@@ -1,71 +1,105 @@
 <script setup>
+import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useFlowbite } from "~/composables/useFlowbite";
-// import { Tabs } from "flowbite";
 
 const route = useRoute();
 const storeId = route.params.storeId;
 
-// const tabsElement = ref(null);
-// const tabElements = [
-//   {
-//     id: "overview-tab",
-//     triggerEl: ref(null),
-//     targetEl: ref(null),
-//   },
-//   {
-//     id: "plan-tab",
-//     triggerEl: ref(null),
-//     targetEl: ref(null),
-//   },
-//   {
-//     id: "designer-tab",
-//     triggerEl: ref(null),
-//     targetEl: ref(null),
-//   },
-//   {
-//     id: "case-tab",
-//     triggerEl: ref(null),
-//     targetEl: ref(null),
-//   },
-//   {
-//     id: "comment-tab",
-//     triggerEl: ref(null),
-//     targetEl: ref(null),
-//   },
-// ];
-// const options = {
-//   defaultTabId: "overview-tab",
-//   activeClasses:
-//     "text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 border-blue-600 dark:border-blue-500",
-//   inactiveClasses:
-//     "text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300",
-//   onShow: () => {
-//     console.log("tab is shown");
-//   },
-// };
-// const instanceOptions = {
-//   id: "comment-tab",
-//   override: true,
-// };
+const lists = reactive([
+  {
+    id: "overview",
+    name: "總攬",
+  },
+  {
+    id: "plan",
+    name: "方案",
+  },
+  {
+    id: "designer",
+    name: "設計師",
+  },
+  {
+    id: "case",
+    name: "案例",
+  },
+  {
+    id: "comment",
+    name: "評論",
+  },
+]);
 
-// const tabs = new Tabs(tabsElement, tabElements, options, instanceOptions);
-// tabs.show("dashboard");
-// tabs.getTab("contacts");
-// tabs.getActiveTab();
+const plans = reactive([
+  {
+    id: 1,
+    img: "/img/hairStyle.jpg",
+    name: "[女性限定] 洗 + 剪 + 護髮",
+    tag: 0,
+    description:
+      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
+    classification: ["剪髮", "洗髮", "護髮"],
+    points: ["9點～16點", "設計師限定"],
+    price: 2000,
+  },
+  {
+    id: 2,
+    img: "/img/hairStyle.jpg",
+    name: "[女性限定] 洗 + 剪 + 護髮",
+    tag: 1,
+    description:
+      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
+    classification: ["剪髮", "洗髮", "護髮"],
+    points: ["9點～16點", "設計師限定"],
+    price: 2000,
+  },
+  {
+    id: 3,
+    img: "/img/hairStyle.jpg",
+    name: "[女性限定] 洗 + 剪 + 護髮",
+    tag: 2,
+    description:
+      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
+    classification: ["剪髮", "洗髮", "護髮"],
+    points: ["9點～16點", "設計師限定"],
+    price: 2000,
+  },
+]);
+const tagsName = reactive([
+  {
+    id: "new",
+    name: "新客",
+  },
+  {
+    id: "secondary",
+    name: "第二次來店",
+  },
+  {
+    id: "event",
+    name: "活動",
+  },
+  {
+    id: "limit",
+    name: "期間限定",
+  },
+]);
+const filteredPlans = ref([...plans]);
+const checkedTags = reactive({
+  0: false,
+  1: false,
+  2: false,
+});
 
-// const tabs = new Tabs(options);
-// const options = {
-//   defaultTabId: "settings",
-//   activeClasses:
-//     "text-red-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 border-blue-600 dark:border-blue-500",
-//   inactiveClasses:
-//     "text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300",
-//   onShow: () => {
-//     console.log("tab is shown");
-//   },
-// };
-// tabs.show("contacts");
+function handleChecked() {
+  const activeTags = Object.keys(checkedTags).filter((key) => checkedTags[key]);
+
+  if (activeTags.length === 0) {
+    filteredPlans.value = [...plans];
+  } else {
+    filteredPlans.value = plans.filter((plan) =>
+      activeTags.includes(plan.tag.toString()),
+    );
+  }
+}
 
 definePageMeta({
   layout: false,
@@ -80,8 +114,22 @@ onMounted(() => {
 
 <template>
   <NuxtLayout name="store">
+    <template #title>
+      <h1 class="mb-4 text-3xl font-medium">ALBUM 台北</h1>
+      <div class="flex justify-between">
+        <p class="w-1/3">
+          我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。
+        </p>
+        <div>
+          <div class="m-auto h-14 w-[1px] bg-primary-dark"></div>
+          <div
+            class="relative bottom-5 left-2 m-auto h-6 w-[1px] rotate-45 bg-primary-dark"
+          ></div>
+        </div>
+      </div>
+    </template>
     <template #banner>
-      <div class="mb-4 w-full">
+      <div class="mb-16 w-full">
         <div
           id="default-carousel"
           class="relative w-full"
@@ -92,7 +140,7 @@ onMounted(() => {
             <!-- Item 1 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
               <img
-                src="/assets/img/recommend03.jpg"
+                src="/img/recommend03.jpg"
                 class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
                 alt="..."
               />
@@ -100,7 +148,7 @@ onMounted(() => {
             <!-- Item 2 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
               <img
-                src="/assets/img/recommend04.jpg"
+                src="/img/recommend04.jpg"
                 class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
                 alt="..."
               />
@@ -185,423 +233,229 @@ onMounted(() => {
       <div class="flex justify-between">
         <div class="w-3/12">
           <ul
-            ref="tabsElement"
             class="-mb-px flex flex-col divide-y divide-slate-300 border-y border-slate-300 font-medium"
-            data-tabs-toggle="#default-tab-content"
+            data-tabs-toggle="#tab-content"
             role="tablist"
+            data-tabs-inactive-classes=""
+            data-tabs-active-classes="bg-primary-dark text-white"
           >
-            <li class="" role="presentation">
+            <li role="presentation" v-for="(list, index) in lists" :key="index">
               <button
-                ref="plan-tab"
-                class="inline-block p-4"
-                id="overview-tab"
-                data-tabs-target="#overview"
+                :ref="`${list.id}-tab`"
+                class="my-3 inline-block flex w-full items-center justify-between rounded-full px-6 py-5 text-left"
+                :id="`${list.id}-tab`"
+                :data-tabs-target="`#${list.id}`"
                 type="button"
                 role="tab"
-                aria-controls="overview"
+                :aria-controls="list.id"
                 aria-selected="false"
               >
-                總攬
-              </button>
-            </li>
-            <li class="" role="presentation">
-              <button
-                ref="plan-tab"
-                class="inline-block p-4"
-                id="plan-tab"
-                data-tabs-target="#plan"
-                type="button"
-                role="tab"
-                aria-controls="plan"
-                aria-selected="false"
-              >
-                方案
-              </button>
-            </li>
-            <li class="" role="presentation">
-              <button
-                ref="designer-tab"
-                class="inline-block p-4"
-                id="designer-tab"
-                data-tabs-target="#designer"
-                type="button"
-                role="tab"
-                aria-controls="designer"
-                aria-selected="false"
-              >
-                設計師
-              </button>
-            </li>
-            <li class="" role="presentation">
-              <button
-                ref="case-tab"
-                class="inline-block p-4"
-                id="case-tab"
-                data-tabs-target="#case"
-                type="button"
-                role="tab"
-                aria-controls="case"
-                aria-selected="false"
-              >
-                案例
-              </button>
-            </li>
-            <li class="" role="presentation">
-              <button
-                ref="comment-tab"
-                class="inline-block p-4"
-                id="comment-tab"
-                data-tabs-target="#comment"
-                type="button"
-                role="tab"
-                aria-controls="comment"
-                aria-selected="false"
-              >
-                評論
+                {{ list.name }}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="size-6 text-primary-light"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
               </button>
             </li>
           </ul>
         </div>
-        <div class="w-7/12" id="default-tab-content">
+        <div class="w-7/12" id="tab-content">
+          <!-- overview -->
           <div
-            class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
+            class="hidden"
             id="overview"
             role="tabpanel"
             aria-labelledby="overview-tab"
           >
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the
-              <strong class="font-medium text-gray-800 dark:text-white"
-                >overview tab's associated content</strong
-              >. Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
           </div>
+          <!-- plan -->
           <div
             class="hidden"
             id="plan"
             role="tabpanel"
             aria-labelledby="plan-tab"
           >
-            <ul class="mb-2 flex flex-wrap">
-              <li>
-                <input
-                  type="checkbox"
-                  id="creditCard"
-                  value=""
-                  class="peer hidden"
-                  required=""
-                />
-                <label
-                  for="creditCard"
-                  class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+            <div class="mb-6 flex flex-wrap items-center">
+              <div class="me-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="size-6"
                 >
-                  <div class="block">
-                    <div class="w-full">全部</div>
-                  </div>
-                </label>
-              </li>
-              <li>
-                <input
-                  type="checkbox"
-                  id="creditCard"
-                  value=""
-                  class="peer hidden"
-                  required=""
-                />
-                <label
-                  for="creditCard"
-                  class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
-                >
-                  <div class="block">
-                    <div class="w-full">新客</div>
-                  </div>
-                </label>
-              </li>
-              <li>
-                <input
-                  type="checkbox"
-                  id="creditCard"
-                  value=""
-                  class="peer hidden"
-                  required=""
-                />
-                <label
-                  for="creditCard"
-                  class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
-                >
-                  <div class="block">
-                    <div class="w-full">第二次消費</div>
-                  </div>
-                </label>
-              </li>
-              <li>
-                <input
-                  type="checkbox"
-                  id="creditCard"
-                  value=""
-                  class="peer hidden"
-                  required=""
-                />
-                <label
-                  for="creditCard"
-                  class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
-                >
-                  <div class="block">
-                    <div class="w-full">限時活動</div>
-                  </div>
-                </label>
-              </li>
-            </ul>
-            <ul class="space-y-4 rounded-2xl bg-gray-100 p-4">
-              <li class="flex space-x-4 rounded-2xl bg-white">
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div>
+                <!-- <p class="m-1 text-xs text-gray-500">篩選標籤</p> -->
+                <ul class="flex">
+                  <li v-for="(tag, index) in tagsName" :key="index">
+                    <input
+                      v-model="checkedTags[index]"
+                      :id="tag.id"
+                      type="checkbox"
+                      class="peer hidden"
+                      @change="handleChecked"
+                    />
+                    <label
+                      :for="tag.id"
+                      class="my-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
+                    >
+                      <div class="block">
+                        <div class="w-full">{{ tag.name }}</div>
+                      </div>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <ul class="space-y-4">
+              <li
+                v-for="(plan, index) in filteredPlans"
+                :key="index"
+                class="group relative flex space-x-4 rounded-3xl border border-primary-light bg-white p-3 hover:border-primary"
+              >
                 <div
                   class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
                 >
+                  <NuxtLink
+                    :to="`/salon/${storeId}/hair1?store_id=${storeId}`"
+                    target="_blank"
+                    class="absolute inset-0 -bottom-2 grid place-items-center bg-[rgba(225,225,225,0.3)] opacity-0 transition-all duration-500 group-hover:bottom-0 group-hover:opacity-100"
+                  >
+                    <button
+                      type="button"
+                      class="flex items-center whitespace-nowrap rounded-full bg-primary-dark p-2 font-medium text-white hover:bg-neutral-700 focus:outline-none focus:ring-4 focus:ring-neutral-500"
+                    >
+                      <div class="rounded-full bg-white p-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-6 text-primary-dark"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+
+                      <p class="mx-4">預約這個方案</p>
+                    </button>
+                  </NuxtLink>
                   <img
-                    src="/assets/img/hairStyle.jpg"
+                    :src="plan.img"
                     class="block h-full w-full object-cover"
                     alt="..."
                   />
                 </div>
                 <div class="p-4">
-                  <div class="mb-2">
-                    <span
-                      class="me-1 rounded bg-red-500 px-3 py-1 text-sm font-medium text-white"
-                      >新客</span
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <h3 class="mb-1 text-xl font-medium">
-                      [女性限定] 洗 + 剪 + 護髮
+                  <div class="mb-3 flex items-center">
+                    <h3 class="text-xl font-medium">
+                      {{ plan.name }}
                     </h3>
+                    <p
+                      class="ms-3 rounded bg-red-500 px-3 py-1 text-xs font-medium text-white"
+                    >
+                      {{ tagsName[plan.tag].name }}
+                    </p>
                   </div>
                   <p class="mb-4 text-sm tracking-wider text-gray-700">
-                    利用條件：平日女性限定 / 不可指定髮型師 /
-                    不可與其他優惠券併用<br />
-                    ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元
-                    ■卷髮造型免費
-                    ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）
-                    【台北市/中山站/距中山站3分鐘】
+                    {{ plan.description }}
                   </p>
-                  <ul class="mb-1 flex">
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >剪髮</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >洗髮</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >護髮</span
-                      >
-                    </li>
-                  </ul>
-                  <ul class="flex">
-                    <li>
-                      <span
-                        class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                        >9點～16點</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                        >設計師限定</span
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <div class="flex flex-col items-end justify-between p-4">
-                  <button
-                    type="button"
-                    class="inline-flex w-fit items-center rounded-full border border-red-500 p-2.5 text-center text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      class="size-5"
-                    >
-                      <path
-                        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"
-                      />
-                    </svg>
-                    <span class="sr-only">Icon description</span>
-                  </button>
-                  <div>
-                    <div class="mb-2 text-right">
-                      <p class="ms-1 text-2xl font-medium text-red-500">
-                        $2,000
-                      </p>
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <ul class="mb-1 flex">
+                        <li
+                          v-for="(tag, index) in plan.classification"
+                          :key="index"
+                        >
+                          <span
+                            class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+                            >{{ tag }}</span
+                          >
+                        </li>
+                      </ul>
+                      <ul class="flex">
+                        <li v-for="(tag, index) in plan.points" :key="index">
+                          <span
+                            class="me-1 rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-500"
+                            >{{ tag }}</span
+                          >
+                        </li>
+                      </ul>
                     </div>
-                    <NuxtLink
-                      :to="`/salon/${storeId}/hair1?store_id=${storeId}`"
-                      target="_blank"
-                    >
-                      <button
+                    <div>
+                      <!-- <button
                         type="button"
-                        class="whitespace-nowrap rounded-lg bg-blue-700 px-5 py-2.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        class="inline-flex w-fit items-center rounded-full border border-red-500 p-2.5 text-center text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
                       >
-                        預約這個方案
-                      </button>
-                    </NuxtLink>
-                  </div>
-                </div>
-              </li>
-              <li class="flex space-x-4 rounded-2xl bg-white">
-                <div
-                  class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
-                >
-                  <img
-                    src="/assets/img/hairStyle.jpg"
-                    class="block h-full w-full object-cover"
-                    alt="..."
-                  />
-                </div>
-                <div class="p-4">
-                  <div class="mb-2">
-                    <span
-                      class="me-1 rounded bg-red-500 px-3 py-1 text-sm font-medium text-white"
-                      >新客</span
-                    >
-                  </div>
-                  <div class="flex items-center">
-                    <h3 class="mb-1 text-xl font-medium">
-                      [女性限定] 洗 + 剪 + 護髮
-                    </h3>
-                  </div>
-                  <p class="mb-4 text-sm tracking-wider text-gray-700">
-                    利用條件：平日女性限定 / 不可指定髮型師 /
-                    不可與其他優惠券併用<br />
-                    ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元
-                    ■卷髮造型免費
-                    ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）
-                    【台北市/中山站/距中山站3分鐘】
-                  </p>
-                  <ul class="mb-1 flex">
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >剪髮</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >洗髮</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                        >護髮</span
-                      >
-                    </li>
-                  </ul>
-                  <ul class="flex">
-                    <li>
-                      <span
-                        class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                        >9點～16點</span
-                      >
-                    </li>
-                    <li>
-                      <span
-                        class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                        >設計師限定</span
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <div class="flex flex-col items-end justify-between p-4">
-                  <button
-                    type="button"
-                    class="inline-flex w-fit items-center rounded-full border border-red-500 p-2.5 text-center text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      class="size-5"
-                    >
-                      <path
-                        d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"
-                      />
-                    </svg>
-                    <span class="sr-only">Icon description</span>
-                  </button>
-                  <div>
-                    <div class="mb-2 text-right">
-                      <p class="ms-1 text-2xl font-medium text-red-500">
-                        $2,000
-                      </p>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-5"
+                        >
+                          <path
+                            d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"
+                          />
+                        </svg>
+                        <span class="sr-only">Icon description</span>
+                      </button> -->
+                      <div>
+                        <p
+                          class="p-2 text-right text-2xl font-medium text-red-500"
+                        >
+                          ${{ plan.price }}
+                        </p>
+                      </div>
                     </div>
-                    <NuxtLink :to="`/salon/salon1`" target="_blank">
-                      <button
-                        type="button"
-                        class="whitespace-nowrap rounded-lg bg-blue-700 px-5 py-2.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      >
-                        預約這個方案
-                      </button>
-                    </NuxtLink>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
+          <!-- designer -->
           <div
-            class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
+            class="hidden"
             id="designer"
             role="tabpanel"
             aria-labelledby="designer-tab"
           >
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the
-              <strong class="font-medium text-gray-800 dark:text-white"
-                >designer tab's associated content</strong
-              >. Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
           </div>
+          <!-- case -->
           <div
-            class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
+            class="hidden"
             id="case"
             role="tabpanel"
             aria-labelledby="case-tab"
           >
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the
-              <strong class="font-medium text-gray-800 dark:text-white"
-                >case tab's associated content</strong
-              >. Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
           </div>
+          <!-- comment -->
           <div
-            class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800"
+            class="hidden"
             id="comment"
             role="tabpanel"
             aria-labelledby="comment-tab"
           >
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              This is some placeholder content the
-              <strong class="font-medium text-gray-800 dark:text-white"
-                >comment tab's associated content</strong
-              >. Clicking another tab will toggle the visibility of this one for
-              the next. The tab JavaScript swaps classes to control the content
-              visibility and styling.
-            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
           </div>
         </div>
       </div>

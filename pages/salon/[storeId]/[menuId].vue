@@ -59,31 +59,30 @@ const calendarOptions = ref({
   initialEvents: [
     {
       title: "已預約",
-      start: "2024-11-11T12:00:00",
-      end: "2024-11-11T13:00:00",
+      start: "2024-11-27T12:00:00",
+      end: "2024-11-27T13:00:00",
       extendedProps: {
         icon: "@",
       },
     },
     {
       title: "已預約",
-      start: "2024-11-11T13:00:00",
-      end: "2024-11-11T14:00:00",
+      start: "2024-11-27T13:00:00",
+      end: "2024-11-27T14:00:00",
       extendedProps: {
         icon: "@",
       },
     },
     {
       title: "已預約",
-      start: "2024-11-12T14:00:00",
-      end: "2024-11-12T15:00:00",
+      start: "2024-11-28T14:00:00",
+      end: "2024-11-28T15:00:00",
       extendedProps: {
         icon: "@",
       },
     },
   ],
   eventContent: function (arg) {
-    console.log(arg);
     const icon = arg.event.extendedProps.icon || "";
     const title = arg.event.title;
     const { timeText } = arg;
@@ -101,73 +100,71 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="flex">
-    <div class="h-fit w-[24%] rounded-2xl border border-gray-200">
+  <div class="flex overflow-hidden">
+    <div class="h-fit w-3/12 rounded-3xl bg-white p-8">
       <div>
-        <div class="p-4">
-          <div class="mb-2">
-            <span
-              class="me-1 rounded bg-red-500 px-3 py-1 text-sm font-medium text-white"
-              >新客</span
-            >
-          </div>
-          <h3 class="mb-1 text-xl font-medium">[女性限定] 洗 + 剪 + 護髮</h3>
-          <p class="mb-2 ms-1 text-2xl font-medium text-red-500">$2,000</p>
-          <div class="mb-4 text-xs tracking-wider text-gray-700">
-            <p><span class="font-medium">使用對象：</span>新客</p>
-            <p class="mb-2">
-              <span class="font-medium">利用條件：</span>平日女性限定 /
-              不可指定髮型師 / 不可與其他優惠券併用
-            </p>
-            <p>
-              ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費
-              ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）
-              【台北市/中山站/距中山站3分鐘】
-            </p>
-          </div>
-          <ul class="mb-1 flex">
-            <li>
-              <span
-                class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                >剪髮</span
-              >
-            </li>
-            <li>
-              <span
-                class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                >洗髮</span
-              >
-            </li>
-            <li>
-              <span
-                class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                >護髮</span
-              >
-            </li>
-          </ul>
-          <ul class="flex">
-            <li>
-              <span
-                class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                >9點～16點</span
-              >
-            </li>
-            <li>
-              <span
-                class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
-                >設計師限定</span
-              >
-            </li>
-          </ul>
+        <div class="mb-2">
+          <span
+            class="me-1 rounded bg-red-500 px-3 py-1 text-sm font-medium text-white"
+            >新客</span
+          >
         </div>
+        <h3 class="mb-1 text-xl font-medium">[女性限定] 洗 + 剪 + 護髮</h3>
+        <p class="mb-2 ms-1 text-2xl font-medium text-red-500">$2,000</p>
+        <div class="mb-4 text-xs tracking-wider text-gray-700">
+          <p><span class="font-medium">使用對象：</span>新客</p>
+          <p class="mb-2">
+            <span class="font-medium">利用條件：</span>平日女性限定 /
+            不可指定髮型師 / 不可與其他優惠券併用
+          </p>
+          <p>
+            ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費
+            ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）
+            【台北市/中山站/距中山站3分鐘】
+          </p>
+        </div>
+        <ul class="mb-1 flex">
+          <li>
+            <span
+              class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+              >剪髮</span
+            >
+          </li>
+          <li>
+            <span
+              class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+              >洗髮</span
+            >
+          </li>
+          <li>
+            <span
+              class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+              >護髮</span
+            >
+          </li>
+        </ul>
+        <ul class="flex">
+          <li>
+            <span
+              class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
+              >9點～16點</span
+            >
+          </li>
+          <li>
+            <span
+              class="me-1 rounded bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500"
+              >設計師限定</span
+            >
+          </li>
+        </ul>
       </div>
     </div>
-    <div class="ml-8 w-[76%]">
+    <div class="w-9/12 p-8">
       <div class="mb-4">
         <p class="mb-1 text-2xl font-medium">選擇來店的時間</p>
         <p class="text-sm">可以選擇指定的設計師，並在想要的時間內點擊預約！</p>
       </div>
-      <ul class="flex flex-wrap">
+      <ul class="mb-8 flex flex-wrap">
         <li>
           <input
             type="radio"
@@ -183,7 +180,7 @@ definePageMeta({
           >
             <img
               class="h-8 w-8 rounded-full object-cover"
-              src="/assets/img/designer.jpg"
+              src="/img/designer.jpg"
               alt="Rounded avatar"
             />
             <div class="block">
@@ -206,7 +203,7 @@ definePageMeta({
           >
             <img
               class="h-8 w-8 rounded-full object-cover"
-              src="/assets/img/designer.jpg"
+              src="/img/designer.jpg"
               alt="Rounded avatar"
             />
             <div class="block">
@@ -229,7 +226,7 @@ definePageMeta({
           >
             <img
               class="h-8 w-8 rounded-full object-cover"
-              src="/assets/img/designer.jpg"
+              src="/img/designer.jpg"
               alt="Rounded avatar"
             />
             <div class="block">
@@ -252,7 +249,7 @@ definePageMeta({
           >
             <img
               class="h-8 w-8 rounded-full object-cover"
-              src="/assets/img/designer.jpg"
+              src="/img/designer.jpg"
               alt="Rounded avatar"
             />
             <div class="block">
@@ -261,7 +258,7 @@ definePageMeta({
           </label>
         </li>
       </ul>
-      <div>
+      <div class="overflow-hidden rounded-3xl bg-white p-8">
         <FullCalendar :options="calendarOptions" />
       </div>
     </div>
@@ -269,6 +266,10 @@ definePageMeta({
 </template>
 
 <style scoped>
+:deep(.fc-scrollgrid) {
+  background-color: white !important;
+}
+
 :deep(.fc-day-today) {
   background-color: transparent !important;
 }
@@ -282,10 +283,10 @@ definePageMeta({
 }
 
 :deep(.fc-button-primary) {
-  background-color: #a0aec0;
-  border-color: #a0aec0;
+  background-color: #23262b;
+  border-color: #23262b;
   padding: 0.25rem;
-  border-radius: 0.25rem !important;
+  border-radius: 100% !important;
   height: fit-content;
 }
 

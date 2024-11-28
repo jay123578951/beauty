@@ -10,7 +10,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="text-primary-dark size-[34px]"
+            class="size-[34px] text-primary-dark"
           >
             <path
               fill-rule="evenodd"

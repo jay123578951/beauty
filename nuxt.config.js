@@ -21,7 +21,12 @@ export default {
 
   vite: {
     optimizeDeps: {
-      include: ["@fawmi/vue-google-maps", "fast-deep-equal"],
+      include: ["@fawmi/vue-google-maps", "fast-deep-equal", "pinia"],
     },
+  },
+
+  modules: ["@pinia/nuxt"],
+  imports: {
+    dirs: ["./components/Header.vue", "./pages/**"],
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[#F4F1EC] pb-4">
-    <Navigation />
+    <Header />
 
     <section>
       <slot />

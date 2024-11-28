@@ -41,7 +41,7 @@ function handleSubmit() {
   <form class="w-full" @submit.prevent="handleSubmit()">
     <div class="flex">
       <div class="mb-6 flex-1 px-3 md:mb-0">
-        <label for="store" class="block text-sm leading-6">店家名</label>
+        <label for="store" class="block text-sm leading-6">想找的地方</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <input
             v-model="localFormValue.store"

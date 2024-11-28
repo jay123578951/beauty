@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen bg-primary-light">
-    <Navigation />
+    <Header />
 
     <!-- <section class="fixed top-0 z-0">
       <slot name="maps" />

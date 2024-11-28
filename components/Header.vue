@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
 import {
   Popover,
   PopoverButton,
@@ -9,13 +11,73 @@ import {
 function handleHomeButton() {
   navigateTo({ path: "/" });
 }
+
+const userStore = useUserStore();
+const { user, isLoggedIn } = storeToRefs(userStore);
+
+const loginFormValues = ref({
+  username: null,
+  password: null,
+});
+
+async function login() {
+  try {
+    const response = await fetch("http://localhost:3001/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        username: loginFormValues.value.username,
+        password: loginFormValues.value.password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const userStore = useUserStore();
+
+      userStore.setUser(data.user);
+    } else {
+      const errorData = await response.text();
+
+      this.error = errorData || "Something went wrong!";
+
+      console.error("Login failed:", errorData);
+    }
+  } catch (error) {
+    this.error = "Network error occurred";
+
+    console.error("Network error:", error);
+  }
+}
+
+async function logout() {
+  try {
+    const response = await fetch("http://localhost:3001/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const userStore = useUserStore();
+
+      userStore.clearUser();
+    } else {
+      console.error("Logout failed");
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+}
 </script>
 
 <template>
   <header
     class="sticky top-0 z-40 flex w-full items-center justify-between px-4 py-8"
   >
-    <nav class="bg-primary flex items-center rounded-full p-1 drop-shadow-xl">
+    <nav class="flex items-center rounded-full bg-primary p-1 drop-shadow-xl">
       <div class="mr-2 flex rounded-full bg-[#F4F1EC] p-3 lg:flex-1">
         <a href="#" class="-m-1.5 p-1.5" @click.prevent="handleHomeButton">
           <span class="sr-only">Your Company</span>
@@ -23,7 +85,7 @@ function handleHomeButton() {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="text-primary-dark size-[34px]"
+            class="size-[34px] text-primary-dark"
           >
             <path
               fill-rule="evenodd"
@@ -68,7 +130,7 @@ function handleHomeButton() {
           <PopoverButton
             class="flex items-center rounded-full bg-[#D0C6B6] p-1 leading-6 text-gray-900"
           >
-            <div class="bg-primary-light mr-2 rounded-full p-2">
+            <div class="mr-2 rounded-full bg-primary-light p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -84,8 +146,15 @@ function handleHomeButton() {
                 />
               </svg>
             </div>
-            <span class="rounded-full bg-[#23262C] px-12 py-4 text-white"
+            <span
+              v-if="!isLoggedIn"
+              class="rounded-full bg-[#23262C] px-12 py-4 text-white"
               >登入</span
+            >
+            <span
+              v-else
+              class="rounded-full bg-[#23262C] px-12 py-4 text-white"
+              >{{ user.username }}</span
             >
           </PopoverButton>
 
@@ -100,7 +169,7 @@ function handleHomeButton() {
             <PopoverPanel
               class="absolute -right-8 right-1 top-full z-10 mt-3 w-screen max-w-xs overflow-hidden rounded-3xl bg-white shadow-lg ring-gray-900/5"
             >
-              <div class="w-full max-w-xs">
+              <div v-if="!isLoggedIn" class="w-full max-w-xs">
                 <form class="mb-4 rounded px-8 pb-8 pt-6">
                   <div class="mb-4">
                     <label
@@ -110,6 +179,7 @@ function handleHomeButton() {
                       帳號
                     </label>
                     <input
+                      v-model="loginFormValues.username"
                       class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
                       id="username"
                       type="text"
@@ -124,6 +194,7 @@ function handleHomeButton() {
                       密碼
                     </label>
                     <input
+                      v-model="loginFormValues.password"
                       class="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
                       id="password"
                       type="password"
@@ -133,6 +204,7 @@ function handleHomeButton() {
                   </div>
                   <div class="flex items-center justify-between">
                     <button
+                      @click="login"
                       class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
                       type="button"
                     >
@@ -146,6 +218,23 @@ function handleHomeButton() {
                     </a>
                   </div>
                 </form>
+              </div>
+              <div v-else class="w-full max-w-xs">
+                <div class="rounded px-8 pb-8 pt-6">
+                  <ul class="mb-4">
+                    <li>最新消息</li>
+                    <li>支付管理</li>
+                    <li>會員情報</li>
+                    <li>設定</li>
+                  </ul>
+                  <button
+                    @click="logout"
+                    class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
+                    type="button"
+                  >
+                    登出
+                  </button>
+                </div>
               </div>
             </PopoverPanel>
           </transition>

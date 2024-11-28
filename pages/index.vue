@@ -42,9 +42,9 @@ definePageMeta({
         </div>
       </div>
       <div>
-        <div class="bg-primary-dark m-auto h-16 w-[1px]"></div>
+        <div class="m-auto h-16 w-[1px] bg-primary-dark"></div>
         <div
-          class="bg-primary-dark relative bottom-5 left-2 m-auto h-6 w-[1px] rotate-45"
+          class="relative bottom-5 left-2 m-auto h-6 w-[1px] rotate-45 bg-primary-dark"
         ></div>
       </div>
     </section>
@@ -242,7 +242,7 @@ definePageMeta({
           <li class="h-full w-full">
             <div class="aspect-[3/2] brightness-90">
               <img
-                src="/assets/img/recommend01.jpg"
+                src="/img/recommend01.jpg"
                 alt=""
                 class="h-full w-full rounded-3xl object-cover"
               />
@@ -257,7 +257,7 @@ definePageMeta({
           <li class="h-full w-full">
             <div class="aspect-[3/2]">
               <img
-                src="/assets/img/recommend02.jpg"
+                src="/img/recommend02.jpg"
                 alt=""
                 class="h-full w-full rounded-3xl object-cover"
               />
@@ -273,7 +273,7 @@ definePageMeta({
         <ul class="h-full w-[45%]">
           <li class="relative h-full w-full">
             <div
-              class="from-primary-dark via-bg-transparent absolute top-0 h-full w-full rounded-3xl bg-gradient-to-t"
+              class="via-bg-transparent absolute top-0 h-full w-full rounded-3xl bg-gradient-to-t from-primary-dark"
             ></div>
             <div class="absolute bottom-0 w-full p-8 text-white">
               <p class="my-3 text-lg font-medium">ZEST lill 信義</p>
@@ -283,7 +283,7 @@ definePageMeta({
             </div>
             <div class="h-full">
               <img
-                src="/assets/img/recommend03.jpg"
+                src="/img/recommend03.jpg"
                 alt=""
                 class="h-full w-auto rounded-3xl object-cover"
               />
@@ -294,7 +294,7 @@ definePageMeta({
           <li class="h-full w-full">
             <div class="aspect-[3/2]">
               <img
-                src="/assets/img/recommend04.jpg"
+                src="/img/recommend04.jpg"
                 alt=""
                 class="h-full w-full rounded-3xl object-cover"
               />
@@ -309,7 +309,7 @@ definePageMeta({
           <li class="h-full w-full">
             <div class="aspect-[3/2]">
               <img
-                src="/assets/img/recommend05.jpg"
+                src="/img/recommend05.jpg"
                 alt=""
                 class="h-full w-full rounded-3xl object-cover"
               />
