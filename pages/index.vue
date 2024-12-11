@@ -8,7 +8,7 @@ const searchData = reactive({
     start: new Date(),
     end: new Date(),
   },
-  service: null,
+  services: null,
 });
 
 const handleSearchDataUpdate = (date) => {

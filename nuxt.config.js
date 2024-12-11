@@ -27,6 +27,6 @@ export default {
 
   modules: ["@pinia/nuxt"],
   imports: {
-    dirs: ["./components/Header.vue", "./pages/**"],
+    dirs: ["./components/Header", "./pages/**"],
   },
 };

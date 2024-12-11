@@ -22,7 +22,7 @@ const loginFormValues = ref({
 
 async function login() {
   try {
-    const response = await fetch("http://localhost:3001/api/login", {
+    const response = await fetch("http://localhost:3001/api/auth/login", {
       method: "POST",
       body: JSON.stringify({
         username: loginFormValues.value.username,
@@ -38,7 +38,7 @@ async function login() {
       const data = await response.json();
       const userStore = useUserStore();
 
-      userStore.setUser(data.user);
+      await userStore.fetchUser(data.user.uuid);
     } else {
       const errorData = await response.text();
 
@@ -55,7 +55,7 @@ async function login() {
 
 async function logout() {
   try {
-    const response = await fetch("http://localhost:3001/api/logout", {
+    const response = await fetch("http://localhost:3001/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });

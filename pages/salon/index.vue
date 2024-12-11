@@ -1,5 +1,4 @@
 <script setup>
-// import { comment } from "postcss";
 import { ref, reactive, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useFlowbite } from "~/composables/useFlowbite";
@@ -13,13 +12,53 @@ const searchData = reactive({
     start: route.query.startDate,
     end: route.query.endDate,
   },
-  service: route.query.service,
+  services: route.query.services,
 });
+
+const stores = reactive({
+  data: [],
+});
+
+async function handleFetchStores() {
+  const ignoredKeys = ["dateRange"];
+  const baseUrl = "http://localhost:3001/api/stores";
+  const queryParams = new URLSearchParams();
+
+  Object.entries(searchData).forEach(([key, value]) => {
+    if (value !== null && value !== "不指定" && !ignoredKeys.includes(key)) {
+      queryParams.append(key, value);
+    }
+  });
+
+  const finalUrl = `${baseUrl}?${decodeURIComponent(queryParams.toString())}`;
+
+  try {
+    const response = await fetch(finalUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      stores.data = data;
+    }
+  } catch (error) {
+    console.error("Failed to fetch stores data", error);
+  }
+}
+
+watch(
+  () => route.query,
+  (newQuery) => {
+    handleFetchStores(newQuery);
+  },
+);
 
 const handleSearchDataUpdate = (date) => {
   Object.assign(searchData, toRaw(date));
 };
-
 const formattedDateRange = computed(() => {
   const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -89,45 +128,6 @@ async function goToStore(id) {
   await navigateTo(`/salon/${id}`);
 }
 
-const stores = reactive([
-  {
-    id: "1",
-    position: { lat: 25.0626695, lng: 121.5238994 },
-    img: "/img/recommend01.jpg",
-    name: "ALBUM 台北",
-    rating: 4.5,
-    description:
-      "我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。",
-    location: "中山站徒步2分鐘",
-    price: 1000,
-    comment: 56,
-  },
-  {
-    id: "2",
-    position: { lat: 25.0504883, lng: 121.51957 },
-    img: "/img/recommend02.jpg",
-    name: "Belle 中山",
-    rating: 4.2,
-    description:
-      "我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。",
-    location: "中山站徒步2分鐘",
-    price: 1000,
-    comment: 56,
-  },
-  {
-    id: "3",
-    position: { lat: 25.0562623, lng: 121.5173593 },
-    img: "/img/recommend05.jpg",
-    name: "Blossom 中山",
-    rating: 4.1,
-    description:
-      "我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。",
-    location: "中山站徒步2分鐘",
-    price: 1000,
-    comment: 56,
-  },
-]);
-
 definePageMeta({
   layout: false,
 });
@@ -151,6 +151,8 @@ onMounted(() => {
       isReady.value = true;
     }, 100);
   });
+
+  handleFetchStores();
 });
 </script>
 
@@ -164,7 +166,9 @@ onMounted(() => {
           class="relative z-10 max-h-full w-[40%] overflow-y-auto rounded-3xl bg-white p-6"
         >
           <div class="mb-4 flex items-center justify-between">
-            <p class="text-lg font-medium">沙龍一覽：{{ stores.length }} 件</p>
+            <p class="text-lg font-medium">
+              沙龍一覽：{{ stores.data.length }} 件
+            </p>
             <div class="inline-flex rounded-md" role="group">
               <button
                 type="button"
@@ -253,14 +257,17 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <ul v-for="(store, index) in stores" :key="`${store.id}-${index}`">
+          <ul
+            v-for="(store, index) in stores.data"
+            :key="`${store.id}-${index}`"
+          >
             <li class="pb-4">
               <NuxtLink
                 :to="`/salon/${store.id}`"
                 class="flex cursor-pointer rounded-3xl border border-slate-300"
               >
                 <img
-                  :src="store.img"
+                  :src="store.img || '/img/store-default.jpg'"
                   class="h-52 w-52 rounded-3xl object-cover"
                   alt="..."
                 />
@@ -456,7 +463,7 @@ onMounted(() => {
               <div class="me-6 ms-4 text-start">
                 <p class="mb-1 text-xs">
                   {{ searchData.store }} / {{ searchData.location }} /
-                  {{ formattedDateRange }} / {{ searchData.service }}
+                  {{ formattedDateRange }} / {{ searchData.services }}
                 </p>
                 <p class="text-lg tracking-wide opacity-55">
                   點擊用更多條件搜尋
@@ -1160,13 +1167,13 @@ onMounted(() => {
           ref="mapRef"
           :center="center"
           :options="options"
-          :zoom="16"
+          :zoom="13"
           class="absolute left-0 top-0 z-0 h-full w-full"
         >
           <GMapMarker
-            v-for="(marker, index) in stores"
+            v-for="(marker, index) in stores.data"
             :key="index"
-            :position="marker.position"
+            :position="{ lat: marker.lat, lng: marker.lng }"
             :clickable="true"
             :draggable="false"
             @click="goToStore(marker.id)"
@@ -1177,7 +1184,7 @@ onMounted(() => {
               <NuxtLink :to="`/salon/${marker.id}`" class="flex items-center">
                 <img
                   class="me-4 h-24 w-24 rounded-lg object-cover"
-                  :src="marker.img"
+                  :src="marker.img ? marker.img : '/img/store-default.jpg'"
                   alt=""
                 />
                 <div class="font-normal">

@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { useFlowbite } from "~/composables/useFlowbite";
 
 const route = useRoute();
-const storeId = route.params.storeId;
+const storeId = ref(route.params.storeId);
 
 const lists = reactive([
   {
@@ -12,7 +12,7 @@ const lists = reactive([
     name: "總攬",
   },
   {
-    id: "plan",
+    id: "menu",
     name: "方案",
   },
   {
@@ -29,76 +29,66 @@ const lists = reactive([
   },
 ]);
 
-const plans = reactive([
-  {
-    id: 1,
-    img: "/img/hairStyle.jpg",
-    name: "[女性限定] 洗 + 剪 + 護髮",
-    tag: 0,
-    description:
-      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
-    classification: ["剪髮", "洗髮", "護髮"],
-    points: ["9點～16點", "設計師限定"],
-    price: 2000,
-  },
-  {
-    id: 2,
-    img: "/img/hairStyle.jpg",
-    name: "[女性限定] 洗 + 剪 + 護髮",
-    tag: 1,
-    description:
-      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
-    classification: ["剪髮", "洗髮", "護髮"],
-    points: ["9點～16點", "設計師限定"],
-    price: 2000,
-  },
-  {
-    id: 3,
-    img: "/img/hairStyle.jpg",
-    name: "[女性限定] 洗 + 剪 + 護髮",
-    tag: 2,
-    description:
-      "利用條件：平日女性限定 / 不可指定髮型師 / 不可與其他優惠券併用 ■平日來店限定的特別價格剪髮染髮★ ■白髮染需加收1000元 ■卷髮造型免費 ■更換為伊諾亞或伊魯米娜染髮需加收2000元（若為長髮需加收額外費用）",
-    classification: ["剪髮", "洗髮", "護髮"],
-    points: ["9點～16點", "設計師限定"],
-    price: 2000,
-  },
-]);
+const menus = reactive({
+  data: [],
+});
+async function handleFetchOffers() {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/api/stores/${storeId.value}/menus`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      menus.data = data || [];
+      filteredMenus.value = [...menus.data];
+    }
+  } catch (error) {
+    console.error("Failed to fetch stores data", error);
+  }
+}
+
 const tagsName = reactive([
   {
-    id: "new",
+    id: 0,
     name: "新客",
   },
   {
-    id: "secondary",
+    id: 1,
     name: "第二次來店",
   },
   {
-    id: "event",
+    id: 2,
     name: "活動",
   },
   {
-    id: "limit",
+    id: 3,
     name: "期間限定",
   },
 ]);
-const filteredPlans = ref([...plans]);
+const filteredMenus = ref([]);
 const checkedTags = reactive({
   0: false,
   1: false,
   2: false,
+  3: false,
 });
 
 function handleChecked() {
-  const activeTags = Object.keys(checkedTags).filter((key) => checkedTags[key]);
+  const activeTags = Object.keys(checkedTags)
+    .filter((key) => checkedTags[key])
+    .map(Number);
 
-  if (activeTags.length === 0) {
-    filteredPlans.value = [...plans];
-  } else {
-    filteredPlans.value = plans.filter((plan) =>
-      activeTags.includes(plan.tag.toString()),
-    );
-  }
+  filteredMenus.value =
+    activeTags.length === 0
+      ? (filteredMenus.value = [...menus.data])
+      : menus.data.filter((menu) => activeTags.includes(menu.tag));
 }
 
 definePageMeta({
@@ -109,6 +99,8 @@ onMounted(() => {
   useFlowbite(() => {
     initFlowbite();
   });
+
+  handleFetchOffers();
 });
 </script>
 
@@ -277,12 +269,12 @@ onMounted(() => {
           >
             <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
           </div>
-          <!-- plan -->
+          <!-- menu -->
           <div
             class="hidden"
-            id="plan"
+            id="menu"
             role="tabpanel"
-            aria-labelledby="plan-tab"
+            aria-labelledby="menu-tab"
           >
             <div class="mb-6 flex flex-wrap items-center">
               <div class="me-6">
@@ -324,7 +316,7 @@ onMounted(() => {
             </div>
             <ul class="space-y-4">
               <li
-                v-for="(plan, index) in filteredPlans"
+                v-for="(menu, index) in filteredMenus"
                 :key="index"
                 class="group relative flex space-x-4 rounded-3xl border border-primary-light bg-white p-3 hover:border-primary"
               >
@@ -332,7 +324,7 @@ onMounted(() => {
                   class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
                 >
                   <NuxtLink
-                    :to="`/salon/${storeId}/hair1?store_id=${storeId}`"
+                    :to="`/salon/${storeId}/menu?menu_id=${menu.id}`"
                     target="_blank"
                     class="absolute inset-0 -bottom-2 grid place-items-center bg-[rgba(225,225,225,0.3)] opacity-0 transition-all duration-500 group-hover:bottom-0 group-hover:opacity-100"
                   >
@@ -359,7 +351,7 @@ onMounted(() => {
                     </button>
                   </NuxtLink>
                   <img
-                    :src="plan.img"
+                    :src="menu.img || '/img/hairStyle.jpg'"
                     class="block h-full w-full object-cover"
                     alt="..."
                   />
@@ -367,22 +359,22 @@ onMounted(() => {
                 <div class="p-4">
                   <div class="mb-3 flex items-center">
                     <h3 class="text-xl font-medium">
-                      {{ plan.name }}
+                      {{ menu.name }}
                     </h3>
                     <p
                       class="ms-3 rounded bg-red-500 px-3 py-1 text-xs font-medium text-white"
                     >
-                      {{ tagsName[plan.tag].name }}
+                      {{ tagsName[menu.tag].name }}
                     </p>
                   </div>
                   <p class="mb-4 text-sm tracking-wider text-gray-700">
-                    {{ plan.description }}
+                    {{ menu.description }}
                   </p>
                   <div class="flex items-end justify-between">
                     <div>
                       <ul class="mb-1 flex">
                         <li
-                          v-for="(tag, index) in plan.classification"
+                          v-for="(tag, index) in menu.classification"
                           :key="index"
                         >
                           <span
@@ -392,7 +384,7 @@ onMounted(() => {
                         </li>
                       </ul>
                       <ul class="flex">
-                        <li v-for="(tag, index) in plan.points" :key="index">
+                        <li v-for="(tag, index) in menu.points" :key="index">
                           <span
                             class="me-1 rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-500"
                             >{{ tag }}</span
@@ -401,29 +393,11 @@ onMounted(() => {
                       </ul>
                     </div>
                     <div>
-                      <!-- <button
-                        type="button"
-                        class="inline-flex w-fit items-center rounded-full border border-red-500 p-2.5 text-center text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+                      <p
+                        class="p-2 text-right text-2xl font-medium text-red-500"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          class="size-5"
-                        >
-                          <path
-                            d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"
-                          />
-                        </svg>
-                        <span class="sr-only">Icon description</span>
-                      </button> -->
-                      <div>
-                        <p
-                          class="p-2 text-right text-2xl font-medium text-red-500"
-                        >
-                          ${{ plan.price }}
-                        </p>
-                      </div>
+                        ${{ menu.price }}
+                      </p>
                     </div>
                   </div>
                 </div>

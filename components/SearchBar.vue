@@ -31,7 +31,7 @@ function handleSubmit() {
       location: localFormValue.location,
       startDate: new Date(localFormValue.dateRange.start).toISOString(),
       endDate: new Date(localFormValue.dateRange.end).toISOString(),
-      service: localFormValue.service,
+      services: localFormValue.services,
     },
   });
 }
@@ -99,17 +99,20 @@ function handleSubmit() {
         </div>
       </div>
       <div class="mb-6 flex-1 px-3 md:mb-0">
-        <label for="service" class="block text-sm leading-6">服務</label>
+        <label for="services" class="block text-sm leading-6">服務</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <select
-            v-model="localFormValue.service"
-            id="service"
-            name="service"
+            v-model="localFormValue.services"
+            id="services"
+            name="services"
             class="block w-full cursor-pointer appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           >
             <option>不指定</option>
             <option>剪髮</option>
             <option>洗髮</option>
+            <option>護髮</option>
+            <option>染髮</option>
+            <option>燙髮</option>
           </select>
         </div>
       </div>
