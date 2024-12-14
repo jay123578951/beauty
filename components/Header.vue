@@ -7,6 +7,7 @@ import {
   PopoverGroup,
   PopoverPanel,
 } from "@headlessui/vue";
+import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 
 function handleHomeButton() {
   navigateTo({ path: "/" });
@@ -20,6 +21,7 @@ const loginFormValues = ref({
   password: null,
 });
 
+const error = ref(false);
 async function login() {
   try {
     const response = await fetch("http://localhost:3001/api/auth/login", {
@@ -40,15 +42,10 @@ async function login() {
 
       await userStore.fetchUser(data.user.uuid);
     } else {
-      const errorData = await response.text();
-
-      this.error = errorData || "Something went wrong!";
-
+      error.value = !error.value;
       console.error("Login failed:", errorData);
     }
   } catch (error) {
-    this.error = "Network error occurred";
-
     console.error("Network error:", error);
   }
 }
@@ -78,7 +75,7 @@ async function logout() {
     class="sticky top-0 z-40 flex w-full items-center justify-between px-4 py-8"
   >
     <nav class="flex items-center rounded-full bg-primary p-1 drop-shadow-xl">
-      <div class="mr-2 flex rounded-full bg-[#F4F1EC] p-3 lg:flex-1">
+      <div class="mr-2 flex rounded-full bg-primary-light p-3 lg:flex-1">
         <a href="#" class="-m-1.5 p-1.5" @click.prevent="handleHomeButton">
           <span class="sr-only">Your Company</span>
           <svg
@@ -128,16 +125,18 @@ async function logout() {
       <PopoverGroup class="hidden lg:flex lg:flex-1 lg:justify-end">
         <Popover class="relative">
           <PopoverButton
-            class="flex items-center rounded-full bg-[#D0C6B6] p-1 leading-6 text-gray-900"
+            class="group flex items-center rounded-full bg-primary p-1 leading-6 text-gray-900 ring-0 focus-visible:outline-none"
           >
-            <div class="mr-2 rounded-full bg-primary-light p-2">
+            <div
+              class="mr-2 transform rounded-full bg-primary-light p-2 transition-all delay-200 group-hover:hidden"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="0.6"
                 stroke="currentColor"
-                class="size-10 text-[#23262C]"
+                class="size-10 text-primary-dark"
               >
                 <path
                   stroke-linecap="round"
@@ -148,12 +147,12 @@ async function logout() {
             </div>
             <span
               v-if="!isLoggedIn"
-              class="rounded-full bg-[#23262C] px-12 py-4 text-white"
+              class="transform rounded-full bg-primary-dark px-12 py-4 text-white transition-all ease-out group-hover:px-20"
               >登入</span
             >
             <span
               v-else
-              class="rounded-full bg-[#23262C] px-12 py-4 text-white"
+              class="transform rounded-full bg-primary-dark px-12 py-4 text-white transition-all ease-out group-hover:px-20"
               >{{ user.username }}</span
             >
           </PopoverButton>
@@ -180,10 +179,10 @@ async function logout() {
                     </label>
                     <input
                       v-model="loginFormValues.username"
-                      class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
                       id="username"
                       type="text"
-                      placeholder="Username"
+                      placeholder=""
                     />
                   </div>
                   <div class="mb-6">
@@ -195,12 +194,14 @@ async function logout() {
                     </label>
                     <input
                       v-model="loginFormValues.password"
-                      class="focus:shadow-outline mb-3 w-full appearance-none rounded border border-red-500 px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
                       id="password"
                       type="password"
                       placeholder="******************"
                     />
-                    <p class="text-xs italic text-red-500">請輸入密碼</p>
+                    <p v-if="error" class="text-xs italic text-red-500">
+                      請檢查帳號或密碼
+                    </p>
                   </div>
                   <div class="flex items-center justify-between">
                     <button
@@ -221,15 +222,84 @@ async function logout() {
               </div>
               <div v-else class="w-full max-w-xs">
                 <div class="rounded px-8 pb-8 pt-6">
-                  <ul class="mb-4">
-                    <li>最新消息</li>
-                    <li>支付管理</li>
-                    <li>會員情報</li>
-                    <li>設定</li>
+                  <ul class="mb-6 space-y-2">
+                    <li class="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="me-2 size-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                        />
+                      </svg>
+                      <p>最新消息</p>
+                    </li>
+                    <li class="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="me-2 size-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"
+                        />
+                      </svg>
+                      <p>支付管理</p>
+                    </li>
+                    <li class="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="me-2 size-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
+                        />
+                      </svg>
+                      <p>會員情報</p>
+                    </li>
+                    <li class="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="me-2 size-5"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                      <p>設定</p>
+                    </li>
                   </ul>
                   <button
                     @click="logout"
-                    class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
+                    class="focus:shadow-outline rounded bg-primary-dark px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
                     type="button"
                   >
                     登出

@@ -12,7 +12,11 @@ const props = defineProps({
     required: true,
   },
 });
-const localFormValue = reactive({ ...props.formValue });
+const localFormValue = reactive({
+  ...props.formValue,
+  location: props.formValue.location || "不指定",
+  services: props.formValue.services || "不指定",
+});
 
 const emit = defineEmits(["update:formValue"]);
 watch(
@@ -46,9 +50,10 @@ function handleSubmit() {
           <input
             v-model="localFormValue.store"
             type="text"
+            placeholder="輸入店名或地址"
             name="store"
             id="store"
-            class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-inset focus:ring-primary"
           />
         </div>
       </div>
@@ -59,7 +64,7 @@ function handleSubmit() {
             v-model="localFormValue.location"
             id="location"
             name="location"
-            class="block w-full cursor-pointer appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-inset focus:ring-primary"
           >
             <option>不指定</option>
             <option>台北市</option>
@@ -90,7 +95,7 @@ function handleSubmit() {
                 name="date"
                 id="date"
                 autocomplete="off"
-                class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-inset focus:ring-primary"
                 placeholder="不指定"
                 @click="togglePopover"
               />
@@ -105,7 +110,7 @@ function handleSubmit() {
             v-model="localFormValue.services"
             id="services"
             name="services"
-            class="block w-full cursor-pointer appearance-none rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-inset focus:ring-primary"
           >
             <option>不指定</option>
             <option>剪髮</option>

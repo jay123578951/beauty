@@ -3,18 +3,29 @@ import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 
-import { useFlowbite } from "~/composables/useFlowbite";
 import FullCalendar from "@fullcalendar/vue3";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import { format, parseISO, addHours, addDays, subDays } from "date-fns";
+import {
+  format,
+  parseISO,
+  addHours,
+  addDays,
+  subDays,
+  isAfter,
+} from "date-fns";
+import {
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/vue";
 
 const route = useRoute();
 const storeId = ref(route.params.storeId);
 const menuId = ref(route.query.menu_id);
-const userStore = useUserStore();
-const { user, isLoggedIn } = storeToRefs(userStore);
 const store = reactive({
   salon: {
     id: null,
@@ -113,17 +124,26 @@ function formattedCalendarEvents(data) {
 
   if (!appointments || !Array.isArray(appointments)) return [];
 
-  return appointments.map((events) => {
+  const seenStarts = new Set();
+
+  return appointments.reduce((acc, events) => {
     const date = extractDate(events.appointment_date);
-    return {
-      title: "已預約",
-      start: `${date}T${events.start_time}`,
-      end: `${date}T${events.end_time}`,
-      extendedProps: {
-        icon: "@",
-      },
-    };
-  });
+    const start = `${date}T${events.start_time}`;
+
+    if (!seenStarts.has(start)) {
+      seenStarts.add(start);
+      acc.push({
+        title: "已預約",
+        start,
+        end: `${date}T${events.end_time}`,
+        extendedProps: {
+          icon: "@",
+        },
+      });
+    }
+
+    return acc;
+  }, []);
 }
 
 async function fetchSchedules(stylist) {
@@ -169,24 +189,106 @@ onMounted(async () => {
   setSchedules(schedules);
 });
 
-function handleDateSelect(selectInfo) {
-  // const isLoggedIn = isLoggedIn.value;
-  // const userId = user.value.uuid;
-  const stylist =
-    selectedStylist.value === "notSpecified" ? null : selectedStylist.value;
-  const menu = menuId.value;
-  const selected = parseISO(selectInfo.startStr);
-  const date = format(selected, "yyyy-MM-dd");
-  const currentTime = format(selected, "HH:mm:ss");
-  const futureTime = format(addHours(selected, 1), "HH:mm:ss");
+const isDateCheckModalOpen = ref(false);
+const isLoginModalOpen = ref(false);
+const isScheduleCheckModalOpen = ref(false);
+function closeModal(event) {
+  switch (event) {
+    case "date":
+      isDateCheckModalOpen.value = false;
+      break;
 
-  if (!isLoggedIn.value) {
-    window.alert("請先登入");
-    return;
+    case "login":
+      isLoginModalOpen.value = false;
+      break;
+
+    case "schedule":
+      isScheduleCheckModalOpen.value = false;
+      break;
+
+    default:
+      break;
   }
+}
+function openModal(event) {
+  switch (event) {
+    case "date":
+      isDateCheckModalOpen.value = true;
+      break;
 
-  const data = {
-    user_id: user.value.uuid,
+    case "login":
+      isLoginModalOpen.value = true;
+      break;
+
+    case "schedule":
+      isScheduleCheckModalOpen.value = true;
+      break;
+
+    default:
+      break;
+  }
+}
+
+const userStore = useUserStore();
+const { user, isLoggedIn } = storeToRefs(userStore);
+const loginFormValues = ref({
+  username: null,
+  password: null,
+});
+const error = ref(false);
+
+async function login() {
+  try {
+    const response = await fetch("http://localhost:3001/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        username: loginFormValues.value.username,
+        password: loginFormValues.value.password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const userStore = useUserStore();
+
+      await userStore.fetchUser(data.user.uuid);
+      await closeModal("login");
+
+      loginFormValues.value.username = null;
+      loginFormValues.value.password = null;
+    } else {
+      error.value = !error.value;
+      console.error("Login failed:", errorData);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+}
+
+const isScheduleChecked = ref(false);
+const scheduleData = ref(null);
+const stylist = ref(null);
+const menu = ref(null);
+const selected = ref(null);
+const date = ref(null);
+const currentTime = ref(null);
+const futureTime = ref(null);
+
+function handleDateSelect(selectInfo) {
+  stylist.value =
+    selectedStylist.value === "notSpecified" ? null : selectedStylist.value;
+  menu.value = menuId.value;
+  selected.value = parseISO(selectInfo.startStr);
+  date.value = format(selected.value, "yyyy-MM-dd");
+  currentTime.value = format(selected.value, "HH:mm:ss");
+  futureTime.value = format(addHours(selected.value, 1), "HH:mm:ss");
+
+  scheduleData.value = {
+    user_id: user.value?.uuid || null,
     stylist_id: stylist,
     menu_id: menu,
     appointment_date: date,
@@ -194,26 +296,26 @@ function handleDateSelect(selectInfo) {
     end_time: futureTime,
   };
 
-  if (data) {
-    if (confirm("確定要預約嗎？") === true) {
-      // postSchedule(data);
-    }
+  const isAfterToday = isAfter(new Date(selected.value), new Date());
+
+  if (!isAfterToday) {
+    openModal("date");
+    return;
   }
 
-  // calendarApi.unselect();
+  if (!isLoggedIn.value) {
+    openModal("login");
+    return;
+  }
 
-  // if (title) {
-  //   calendarApi.addEvent({
-  //     id: String(Date.now()),
-  //     title,
-  //     start: selectInfo.startStr,
-  //     end: selectInfo.endStr,
-  //     allDay: selectInfo.allDay,
-  //   });
-  // }
+  if (scheduleData.value) {
+    openModal("schedule");
+  }
 }
 
-async function postSchedule(data) {
+async function postSchedule(schedule) {
+  const data = { ...schedule };
+
   try {
     const response = await fetch("http://localhost:3001/api/appointments", {
       method: "POST",
@@ -224,8 +326,12 @@ async function postSchedule(data) {
     });
 
     if (response.ok) {
-      const data = await response.json();
-      console.log(data);
+      const stylist = selectedStylist.value;
+      const schedules = await fetchSchedules(stylist);
+      await setSchedules(schedules);
+      await closeModal("schedule");
+
+      isScheduleChecked.value = null;
     }
   } catch (error) {
     console.error("Failed to fetch stores data", error);
@@ -307,12 +413,6 @@ const calendarOptions = ref({
   select: handleDateSelect,
 });
 
-onMounted(() => {
-  useFlowbite(() => {
-    initFlowbite();
-  });
-});
-
 definePageMeta({
   layout: "page",
 });
@@ -330,7 +430,7 @@ definePageMeta({
         </div>
         <h3 class="mb-1 text-xl font-medium">{{ store.menu.name }}</h3>
         <p class="mb-2 ms-1 text-2xl font-medium text-red-500">
-          {{ store.menu.price }}
+          ${{ store.menu.price }}
         </p>
         <div class="mb-4 text-xs tracking-wider text-gray-700">
           <p>{{ store.menu.description }}</p>
@@ -412,6 +512,371 @@ definePageMeta({
         <FullCalendar :options="calendarOptions" />
       </div>
     </div>
+  </div>
+  <!-- 檢查預約時間 modal -->
+  <div>
+    <TransitionRoot appear :show="isDateCheckModalOpen" as="template">
+      <Dialog as="div" @close="closeModal('date')" class="relative z-40">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <DialogTitle
+                  as="h3"
+                  class="mb-4 text-lg font-medium leading-6 text-gray-900"
+                >
+                  請重新選擇日期
+                </DialogTitle>
+                <p class="mb-4">只能預約「今日」之後的日期。</p>
+                <button
+                  class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
+                  type="button"
+                  @click="closeModal('date')"
+                >
+                  了解
+                </button>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+  </div>
+  <!-- 登入 modal -->
+  <div>
+    <TransitionRoot appear :show="isLoginModalOpen" as="template">
+      <Dialog as="div" @close="closeModal('login')" class="relative z-40">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <DialogTitle
+                  as="h3"
+                  class="text-lg font-medium leading-6 text-gray-900"
+                >
+                  請先登入
+                </DialogTitle>
+                <form class="mb-4 rounded px-8 pb-8 pt-6">
+                  <div class="mb-4">
+                    <label
+                      class="mb-2 block text-sm font-bold text-gray-700"
+                      for="username"
+                    >
+                      帳號
+                    </label>
+                    <input
+                      v-model="loginFormValues.username"
+                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
+                      id="username"
+                      type="text"
+                      placeholder=""
+                    />
+                  </div>
+                  <div class="mb-6">
+                    <label
+                      class="mb-2 block text-sm font-bold text-gray-700"
+                      for="password"
+                    >
+                      密碼
+                    </label>
+                    <input
+                      v-model="loginFormValues.password"
+                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
+                      id="password"
+                      type="password"
+                      placeholder="******************"
+                    />
+                    <p v-if="error" class="text-xs italic text-red-500">
+                      請檢查帳號或密碼
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <button
+                      @click="login"
+                      class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
+                      type="button"
+                    >
+                      登入
+                    </button>
+                    <a
+                      class="inline-block align-baseline text-sm text-gray-500 hover:text-gray-800"
+                      href="#"
+                    >
+                      忘記密碼?
+                    </a>
+                  </div>
+                </form>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+  </div>
+  <!-- 確認預約 modal -->
+  <div>
+    <TransitionRoot appear :show="isScheduleCheckModalOpen" as="template">
+      <Dialog as="div" @close="closeModal('schedule')" class="relative z-40">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 w-screen overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4">
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <DialogTitle
+                  as="h3"
+                  class="mb-5 text-xl font-medium leading-6 text-gray-900"
+                >
+                  {{ store.salon.name }}
+                </DialogTitle>
+                <form @submit.prevent="postSchedule(scheduleData)">
+                  <div class="mb-6 text-sm">
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>方案</li>
+                        <li>設計師</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li>{{ store.menu.name }}</li>
+                        <li>
+                          <div v-if="selectedStylist === 'notSpecified'">
+                            <p>不指定</p>
+                          </div>
+                          <div v-else>
+                            <p>
+                              {{
+                                stylists.find(
+                                  (stylist) => stylist.id === selectedStylist,
+                                ).name
+                              }}
+                            </p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>價格</li>
+                        <li>優惠券</li>
+                        <li>總計</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li>${{ store.menu.price }}</li>
+                        <li>-</li>
+                        <li class="text-lg font-medium text-red-500">
+                          ${{ store.menu.price }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>預約人</li>
+                        <li>聯絡電話</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li>{{ user.username }}</li>
+                        <li>0901234567</li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>注意事項 *</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li class="mb-4">
+                          由於是私人沙龍，可能會有透過電話預約已經被填滿的情況。
+                          若是希望在10分鐘內抵達，建議您透過電話預約。
+                          若預約時間可能會遲到，請不吝與我們聯繫，並撥打電話告知。
+                        </li>
+                        <li class="flex items-center">
+                          <input
+                            v-model="isScheduleChecked"
+                            type="checkbox"
+                            id="precautions"
+                            name="precautions"
+                            class="me-2 focus:ring-0"
+                            required
+                          />
+                          <label for="precautions">
+                            我瞭解了
+                            <span class="text-xs">(必選)</span>
+                          </label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>想了解什麼</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li class="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="knowWhat01"
+                            name="precautions"
+                            class="me-2"
+                          />
+                          <label for="knowWhat01">適合自己的風格</label><br />
+                        </li>
+                        <li class="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="knowWhat02"
+                            name="precautions"
+                            class="me-2"
+                          />
+                          <label for="knowWhat02">關於日常的整理方法</label>
+                        </li>
+                        <li class="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="knowWhat03"
+                            name="precautions"
+                            class="me-2"
+                          />
+                          <label for="knowWhat03">關於其他推薦的服務</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>服務請求</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li class="flex items-center">
+                          <input
+                            type="radio"
+                            id="service01"
+                            name="precautions"
+                            class="me-2"
+                          />
+                          <label for="service01">想要享受談話的樂趣</label>
+                        </li>
+                        <li class="flex items-center">
+                          <input
+                            type="radio"
+                            id="service02"
+                            name="precautions"
+                            class="me-2"
+                          />
+                          <label for="service02">想要安靜的度過時間</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-4 flex justify-between border-b pb-4">
+                      <ul class="w-1/3 space-y-1 text-gray-500">
+                        <li>請求/諮詢</li>
+                      </ul>
+                      <ul class="w-2/3 space-y-1">
+                        <li class="flex items-center">
+                          <textarea
+                            id="consult"
+                            name="consult"
+                            rows="4"
+                            cols="50"
+                          ></textarea>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <button
+                      type="submit"
+                      class="focus:shadow-outline me-4 rounded bg-primary-dark px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
+                      :class="
+                        isScheduleChecked ||
+                        'cursor-not-allowed bg-gray-500 hover:bg-gray-500'
+                      "
+                      :disabled="!isScheduleChecked"
+                    >
+                      我要預約
+                    </button>
+                    <button
+                      type="button"
+                      class="inline-block align-baseline text-sm text-gray-500 hover:text-primary-dark"
+                      @click="
+                        closeModal('schedule');
+                        isScheduleChecked = null;
+                      "
+                    >
+                      下次一定
+                    </button>
+                  </div>
+                </form>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 

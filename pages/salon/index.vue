@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useFlowbite } from "~/composables/useFlowbite";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 
 const route = useRoute();
 
@@ -128,19 +128,11 @@ async function goToStore(id) {
   await navigateTo(`/salon/${id}`);
 }
 
-definePageMeta({
-  layout: false,
-});
-
 const isReady = ref(false);
 const searchBtn = ref(null);
 const searchBtnWidth = ref(0);
 
 onMounted(() => {
-  useFlowbite(() => {
-    initFlowbite();
-  });
-
   nextTick(() => {
     if (searchBtn.value) {
       const width = searchBtn.value.getBoundingClientRect().width;
@@ -153,6 +145,10 @@ onMounted(() => {
   });
 
   handleFetchStores();
+});
+
+definePageMeta({
+  layout: false,
 });
 </script>
 
@@ -208,53 +204,61 @@ onMounted(() => {
                   />
                 </svg>
               </button>
-              <button
-                type="button"
-                class="inline-flex items-center bg-white px-2 py-2 text-sm font-medium"
-                id="dropdownDefaultButton"
-                data-dropdown-toggle="dropdown"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="mr-1 size-6"
+              <Popover class="relative">
+                <PopoverButton
+                  class="inline-flex items-center bg-white px-2 py-2 text-sm font-medium"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
-                  />
-                </svg>
-                <p class="text-sm">排序</p>
-              </button>
-
-              <div
-                id="dropdown"
-                class="z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
-              >
-                <ul
-                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                  aria-labelledby="dropdownDefaultButton"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="mr-1 size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
+                    />
+                  </svg>
+                  <p class="text-sm">排序</p>
+                </PopoverButton>
+                <transition
+                  enter-active-class="transition duration-200 ease-out"
+                  enter-from-class="translate-y-1 opacity-0"
+                  enter-to-class="translate-y-0 opacity-100"
+                  leave-active-class="transition duration-150 ease-in"
+                  leave-from-class="translate-y-0 opacity-100"
+                  leave-to-class="translate-y-1 opacity-0"
                 >
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >評分</a
+                  <PopoverPanel class="absolute z-30">
+                    <div
+                      class="w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
                     >
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >價格</a
-                    >
-                  </li>
-                </ul>
-              </div>
+                      <ul
+                        class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                        aria-labelledby="dropdownDefaultButton"
+                      >
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >評分</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >價格</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </PopoverPanel>
+                </transition>
+              </Popover>
             </div>
           </div>
           <ul
@@ -461,9 +465,13 @@ onMounted(() => {
                 </svg>
               </div>
               <div class="me-6 ms-4 text-start">
-                <p class="mb-1 text-xs">
+                <p v-if="searchData.store" class="mb-1 text-xs">
                   {{ searchData.store }} / {{ searchData.location }} /
                   {{ formattedDateRange }} / {{ searchData.services }}
+                </p>
+                <p v-else class="mb-1 text-xs">
+                  {{ searchData.location }} / {{ formattedDateRange }} /
+                  {{ searchData.services }}
                 </p>
                 <p class="text-lg tracking-wide opacity-55">
                   點擊用更多條件搜尋
@@ -1173,7 +1181,7 @@ onMounted(() => {
           <GMapMarker
             v-for="(marker, index) in stores.data"
             :key="index"
-            :position="{ lat: marker.lat, lng: marker.lng }"
+            :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
             :clickable="true"
             :draggable="false"
             @click="goToStore(marker.id)"

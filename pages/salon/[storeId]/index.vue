@@ -1,7 +1,8 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { useFlowbite } from "~/composables/useFlowbite";
+import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+import { initCarousels } from "flowbite";
 
 const route = useRoute();
 const storeId = ref(route.params.storeId);
@@ -97,7 +98,7 @@ definePageMeta({
 
 onMounted(() => {
   useFlowbite(() => {
-    initFlowbite();
+    initCarousels();
   });
 
   handleFetchOffers();
@@ -222,217 +223,203 @@ onMounted(() => {
       </div>
     </template>
     <template #content>
-      <div class="flex justify-between">
-        <div class="w-3/12">
-          <ul
-            class="-mb-px flex flex-col divide-y divide-slate-300 border-y border-slate-300 font-medium"
-            data-tabs-toggle="#tab-content"
-            role="tablist"
-            data-tabs-inactive-classes=""
-            data-tabs-active-classes="bg-primary-dark text-white"
-          >
-            <li role="presentation" v-for="(list, index) in lists" :key="index">
-              <button
-                :ref="`${list.id}-tab`"
-                class="my-3 inline-block flex w-full items-center justify-between rounded-full px-6 py-5 text-left"
-                :id="`${list.id}-tab`"
-                :data-tabs-target="`#${list.id}`"
-                type="button"
-                role="tab"
-                :aria-controls="list.id"
-                aria-selected="false"
-              >
-                {{ list.name }}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-6 text-primary-light"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div class="w-7/12" id="tab-content">
-          <!-- overview -->
-          <div
-            class="hidden"
-            id="overview"
-            role="tabpanel"
-            aria-labelledby="overview-tab"
-          >
-            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
-          </div>
-          <!-- menu -->
-          <div
-            class="hidden"
-            id="menu"
-            role="tabpanel"
-            aria-labelledby="menu-tab"
-          >
-            <div class="mb-6 flex flex-wrap items-center">
-              <div class="me-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-6"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div>
-                <!-- <p class="m-1 text-xs text-gray-500">篩選標籤</p> -->
-                <ul class="flex">
-                  <li v-for="(tag, index) in tagsName" :key="index">
-                    <input
-                      v-model="checkedTags[index]"
-                      :id="tag.id"
-                      type="checkbox"
-                      class="peer hidden"
-                      @change="handleChecked"
-                    />
-                    <label
-                      :for="tag.id"
-                      class="my-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
-                    >
-                      <div class="block">
-                        <div class="w-full">{{ tag.name }}</div>
-                      </div>
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <ul class="space-y-4">
-              <li
-                v-for="(menu, index) in filteredMenus"
+      <TabGroup as="template">
+        <div class="flex justify-between">
+          <div class="w-3/12">
+            <TabList
+              class="-mb-px flex flex-col divide-y divide-slate-300 border-y border-slate-300 font-medium"
+            >
+              <Tab
+                v-for="(list, index) in lists"
                 :key="index"
-                class="group relative flex space-x-4 rounded-3xl border border-primary-light bg-white p-3 hover:border-primary"
+                v-slot="{ selected }"
+                class="focus-visible:outline-none"
               >
                 <div
-                  class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
+                  class="my-3 inline-block flex w-full items-center justify-between rounded-full px-6 py-5 text-left"
+                  :class="{
+                    'bg-primary-dark text-white': selected,
+                  }"
                 >
-                  <NuxtLink
-                    :to="`/salon/${storeId}/menu?menu_id=${menu.id}`"
-                    target="_blank"
-                    class="absolute inset-0 -bottom-2 grid place-items-center bg-[rgba(225,225,225,0.3)] opacity-0 transition-all duration-500 group-hover:bottom-0 group-hover:opacity-100"
+                  {{ list.name }}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6 text-primary-light"
                   >
-                    <button
-                      type="button"
-                      class="flex items-center whitespace-nowrap rounded-full bg-primary-dark p-2 font-medium text-white hover:bg-neutral-700 focus:outline-none focus:ring-4 focus:ring-neutral-500"
-                    >
-                      <div class="rounded-full bg-white p-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          class="size-6 text-primary-dark"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </div>
-
-                      <p class="mx-4">預約這個方案</p>
-                    </button>
-                  </NuxtLink>
-                  <img
-                    :src="menu.img || '/img/hairStyle.jpg'"
-                    class="block h-full w-full object-cover"
-                    alt="..."
-                  />
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                 </div>
-                <div class="p-4">
-                  <div class="mb-3 flex items-center">
-                    <h3 class="text-xl font-medium">
-                      {{ menu.name }}
-                    </h3>
-                    <p
-                      class="ms-3 rounded bg-red-500 px-3 py-1 text-xs font-medium text-white"
+              </Tab>
+            </TabList>
+          </div>
+          <div class="w-7/12">
+            <TabPanels>
+              <!-- overview -->
+              <TabPanel>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  coming soon.
+                </p>
+              </TabPanel>
+              <!-- menu -->
+              <TabPanel>
+                <div class="mb-6 flex flex-wrap items-center">
+                  <div class="me-6">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="size-6"
                     >
-                      {{ tagsName[menu.tag].name }}
-                    </p>
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
                   </div>
-                  <p class="mb-4 text-sm tracking-wider text-gray-700">
-                    {{ menu.description }}
-                  </p>
-                  <div class="flex items-end justify-between">
-                    <div>
-                      <ul class="mb-1 flex">
-                        <li
-                          v-for="(tag, index) in menu.classification"
-                          :key="index"
+                  <div>
+                    <ul class="flex">
+                      <li v-for="(tag, index) in tagsName" :key="index">
+                        <input
+                          v-model="checkedTags[index]"
+                          :id="tag.id"
+                          type="checkbox"
+                          class="peer hidden"
+                          @change="handleChecked"
+                        />
+                        <label
+                          :for="tag.id"
+                          class="my-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
                         >
-                          <span
-                            class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
-                            >{{ tag }}</span
-                          >
-                        </li>
-                      </ul>
-                      <ul class="flex">
-                        <li v-for="(tag, index) in menu.points" :key="index">
-                          <span
-                            class="me-1 rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-500"
-                            >{{ tag }}</span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p
-                        class="p-2 text-right text-2xl font-medium text-red-500"
+                          <div class="block">
+                            <div class="w-full">{{ tag.name }}</div>
+                          </div>
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <ul class="space-y-4">
+                  <li
+                    v-for="(menu, index) in filteredMenus"
+                    :key="index"
+                    class="group relative flex space-x-4 rounded-3xl border border-primary-light bg-white p-3 hover:border-primary"
+                  >
+                    <div
+                      class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
+                    >
+                      <NuxtLink
+                        :to="`/salon/${storeId}/menu?menu_id=${menu.id}`"
+                        target="_blank"
+                        class="absolute inset-0 -bottom-2 grid place-items-center bg-[rgba(225,225,225,0.3)] opacity-0 transition-all duration-500 group-hover:bottom-0 group-hover:opacity-100"
                       >
-                        ${{ menu.price }}
-                      </p>
+                        <button
+                          type="button"
+                          class="flex items-center whitespace-nowrap rounded-full bg-primary-dark p-2 font-medium text-white hover:bg-neutral-700 focus:outline-none focus:ring-4 focus:ring-neutral-500"
+                        >
+                          <div class="rounded-full bg-white p-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="size-6 text-primary-dark"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+
+                          <p class="mx-4">預約這個方案</p>
+                        </button>
+                      </NuxtLink>
+                      <img
+                        :src="menu.img || '/img/hairStyle.jpg'"
+                        class="block h-full w-full object-cover"
+                        alt="..."
+                      />
                     </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- designer -->
-          <div
-            class="hidden"
-            id="designer"
-            role="tabpanel"
-            aria-labelledby="designer-tab"
-          >
-            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
-          </div>
-          <!-- case -->
-          <div
-            class="hidden"
-            id="case"
-            role="tabpanel"
-            aria-labelledby="case-tab"
-          >
-            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
-          </div>
-          <!-- comment -->
-          <div
-            class="hidden"
-            id="comment"
-            role="tabpanel"
-            aria-labelledby="comment-tab"
-          >
-            <p class="text-sm text-gray-500 dark:text-gray-400">coming soon.</p>
+                    <div class="p-4">
+                      <div class="mb-3 flex items-center">
+                        <h3 class="text-xl font-medium">
+                          {{ menu.name }}
+                        </h3>
+                        <p
+                          class="ms-3 rounded bg-red-500 px-3 py-1 text-xs font-medium text-white"
+                        >
+                          {{ tagsName[menu.tag].name }}
+                        </p>
+                      </div>
+                      <p class="mb-4 text-sm tracking-wider text-gray-700">
+                        {{ menu.description }}
+                      </p>
+                      <div class="flex items-end justify-between">
+                        <div>
+                          <ul class="mb-1 flex">
+                            <li
+                              v-for="(tag, index) in menu.classification"
+                              :key="index"
+                            >
+                              <span
+                                class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+                                >{{ tag }}</span
+                              >
+                            </li>
+                          </ul>
+                          <ul class="flex">
+                            <li
+                              v-for="(tag, index) in menu.points"
+                              :key="index"
+                            >
+                              <span
+                                class="me-1 rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-500"
+                                >{{ tag }}</span
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p
+                            class="p-2 text-right text-2xl font-medium text-red-500"
+                          >
+                            ${{ menu.price }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </TabPanel>
+              <!-- designer -->
+              <TabPanel>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  coming soon.
+                </p>
+              </TabPanel>
+              <!-- case -->
+              <TabPanel>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  coming soon.
+                </p>
+              </TabPanel>
+              <!-- comment -->
+              <TabPanel>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  coming soon.
+                </p>
+              </TabPanel>
+            </TabPanels>
           </div>
         </div>
-      </div>
+      </TabGroup>
     </template>
   </NuxtLayout>
 </template>
