@@ -61,10 +61,12 @@ const tagsName = reactive([
   },
 ]);
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 async function fetchMenuInfo() {
   try {
     const response = await fetch(
-      `http://localhost:3001/api/stores/${storeId.value}/menus/${menuId.value}`,
+      `${apiUrl}/api/stores/${storeId.value}/menus/${menuId.value}`,
       {
         method: "GET",
         headers: {
@@ -87,7 +89,7 @@ const selectedStylist = ref("notSpecified");
 
 async function fetchStylists() {
   try {
-    const response = await fetch("http://localhost:3001/api/stylists", {
+    const response = await fetch(`${apiUrl}/api/stylists`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -149,7 +151,7 @@ function formattedCalendarEvents(data) {
 async function fetchSchedules(stylist) {
   const startDate = calendarDateRange.value.startDate;
   const endDate = calendarDateRange.value.endDate;
-  const url = "http://localhost:3001/api/appointments/schedule";
+  const url = `${apiUrl}/api/appointments/schedule`;
   const fetchUrl =
     stylist !== "notSpecified"
       ? `${url}?startDate=${startDate}&endDate=${endDate}&stylistId=${stylist}`
@@ -317,7 +319,7 @@ async function postSchedule(schedule) {
   const data = { ...schedule };
 
   try {
-    const response = await fetch("http://localhost:3001/api/appointments", {
+    const response = await fetch(`${apiUrl}/api/appointments`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

@@ -30,13 +30,15 @@ const lists = reactive([
   },
 ]);
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 const menus = reactive({
   data: [],
 });
 async function handleFetchOffers() {
   try {
     const response = await fetch(
-      `http://localhost:3001/api/stores/${storeId.value}/menus`,
+      `${apiUrl}/api/stores/${storeId.value}/menus`,
       {
         method: "GET",
         headers: {

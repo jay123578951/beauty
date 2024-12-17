@@ -7,7 +7,6 @@ import {
   PopoverGroup,
   PopoverPanel,
 } from "@headlessui/vue";
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 
 function handleHomeButton() {
   navigateTo({ path: "/" });
@@ -21,10 +20,12 @@ const loginFormValues = ref({
   password: null,
 });
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 const error = ref(false);
 async function login() {
   try {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
+    const response = await fetch(`${apiUrl}/api/auth/login`, {
       method: "POST",
       body: JSON.stringify({
         username: loginFormValues.value.username,
@@ -52,7 +53,7 @@ async function login() {
 
 async function logout() {
   try {
-    const response = await fetch("http://localhost:3001/api/auth/logout", {
+    const response = await fetch(`${apiUrl}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });

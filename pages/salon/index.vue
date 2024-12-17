@@ -19,9 +19,11 @@ const stores = reactive({
   data: [],
 });
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 async function handleFetchStores() {
   const ignoredKeys = ["dateRange"];
-  const baseUrl = "http://localhost:3001/api/stores";
+  const baseUrl = `${apiUrl}/api/stores`;
   const queryParams = new URLSearchParams();
 
   Object.entries(searchData).forEach(([key, value]) => {

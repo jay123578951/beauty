@@ -15,7 +15,17 @@ export default {
   runtimeConfig: {
     public: {
       mapApiKey: "AIzaSyDpXWj2tq9dlmSyUOJ2N0GDKIVeGfhChM4",
-      // mapApiKey: "xxx",
+      apiUrl: process.env.API_URL || "http://localhost:3001",
+    },
+  },
+
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://13.112.145.125:3001",
+        changeOrigin: true,
+        pathRewrite: { "^/api": "/api" },
+      },
     },
   },
 

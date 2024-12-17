@@ -14,8 +14,11 @@ export const useUserStore = defineStore("user", {
     async fetchUser(userUuid) {
       if (!userUuid) return;
 
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.apiUrl;
+
       try {
-        const response = await fetch("http://localhost:3001/api/auth/profile", {
+        const response = await fetch(`${apiUrl}/api/auth/profile`, {
           method: "POST",
           body: JSON.stringify({
             id: userUuid,
@@ -36,14 +39,14 @@ export const useUserStore = defineStore("user", {
     },
 
     async checkAuth() {
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.apiUrl;
+
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/auth/check-auth",
-          {
-            method: "GET",
-            credentials: "include",
-          },
-        );
+        const response = await fetch(`${apiUrl}/api/auth/check-auth`, {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (response.ok) {
           const userData = await response.json();
