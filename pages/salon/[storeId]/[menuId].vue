@@ -1,6 +1,4 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 
 import FullCalendar from "@fullcalendar/vue3";
@@ -23,7 +21,10 @@ import {
   DialogTitle,
 } from "@headlessui/vue";
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 const route = useRoute();
+
 const storeId = ref(route.params.storeId);
 const menuId = ref(route.query.menu_id);
 const store = reactive({
@@ -61,8 +62,6 @@ const tagsName = reactive([
   },
 ]);
 
-const config = useRuntimeConfig();
-const apiUrl = config.public.apiUrl;
 async function fetchMenuInfo() {
   try {
     const response = await fetch(
@@ -376,33 +375,7 @@ const calendarOptions = ref({
 
   selectConstraint: "businessHours",
   events: [],
-  // lazyFetching: true,
-  // initialEvents: [
-  //   {
-  //     title: "已預約",
-  //     start: "2024-12-06T12:00:00",
-  //     end: "2024-12-06T13:00:00",
-  //     extendedProps: {
-  //       icon: "@",
-  //     },
-  //   },
-  //   {
-  //     title: "已預約",
-  //     start: "2024-12-06T13:00:00",
-  //     end: "2024-12-06T14:00:00",
-  //     extendedProps: {
-  //       icon: "@",
-  //     },
-  //   },
-  //   {
-  //     title: "已預約",
-  //     start: "2024-12-07T14:00:00",
-  //     end: "2024-12-07T15:00:00",
-  //     extendedProps: {
-  //       icon: "@",
-  //     },
-  //   },
-  // ],
+
   eventContent: function (arg) {
     const icon = arg.event.extendedProps.icon || "";
     const title = arg.event.title;
@@ -421,8 +394,8 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="flex overflow-hidden">
-    <div class="h-fit w-3/12 rounded-3xl bg-white p-8">
+  <div class="flex flex-col overflow-hidden px-4 lg:flex-row lg:px-0">
+    <div class="mb-8 h-fit w-full rounded-3xl bg-white p-8 lg:mb-0 lg:w-3/12">
       <div>
         <div class="mb-2">
           <span
@@ -455,13 +428,15 @@ definePageMeta({
         </ul>
       </div>
     </div>
-    <div class="w-9/12 p-8">
+    <div class="w-full lg:w-9/12 lg:p-8">
       <div class="mb-4">
         <p class="mb-1 text-2xl font-medium">選擇來店的時間</p>
         <p class="text-sm">可以選擇指定的設計師，並在想要的時間內點擊預約！</p>
       </div>
-      <ul class="mb-8 flex flex-wrap">
-        <li>
+      <ul
+        class="scrollbar-hide relative mb-6 flex w-full snap-x gap-1 overflow-x-auto scroll-smooth"
+      >
+        <li class="min-w-fit">
           <input
             v-model="selectedStylist"
             type="radio"
@@ -485,7 +460,7 @@ definePageMeta({
             </div>
           </label>
         </li>
-        <li v-for="(stylist, index) in stylists" :key="index">
+        <li v-for="(stylist, index) in stylists" :key="index" class="min-w-fit">
           <input
             v-model="selectedStylist"
             type="radio"
@@ -510,8 +485,10 @@ definePageMeta({
           </label>
         </li>
       </ul>
-      <div class="overflow-hidden rounded-3xl bg-white p-8">
-        <FullCalendar :options="calendarOptions" />
+      <div
+        class="scrollbar-hide snap-x overflow-x-auto scroll-smooth rounded-3xl bg-white px-4 py-6 lg:overflow-hidden lg:p-8"
+      >
+        <FullCalendar class="min-w-[800px]" :options="calendarOptions" />
       </div>
     </div>
   </div>
@@ -895,6 +872,10 @@ definePageMeta({
   height: 2rem !important;
 }
 
+:deep(.fc .fc-toolbar) {
+  justify-content: start;
+}
+
 :deep(.fc-header-toolbar) {
   margin-bottom: 1rem !important;
 }
@@ -909,5 +890,14 @@ definePageMeta({
 
 :deep(.fc-prev-button) {
   margin-right: 0.5rem;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
 }
 </style>

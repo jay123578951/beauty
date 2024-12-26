@@ -1,11 +1,8 @@
 <template>
-  <footer class="mx-4 rounded-2xl bg-white dark:bg-gray-900">
+  <footer class="mx-4 mb-20 rounded-2xl bg-white dark:bg-gray-900 lg:mb-0">
     <div class="mx-auto w-full max-w-screen-xl p-4 md:py-8">
       <div class="sm:flex sm:items-center sm:justify-between">
-        <a
-          href="https://flowbite.com/"
-          class="mb-4 flex items-center space-x-3 sm:mb-0 rtl:space-x-reverse"
-        >
+        <a class="mb-4 flex items-center space-x-3 sm:mb-0 rtl:space-x-reverse">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -48,9 +45,8 @@
       />
       <span
         class="block text-sm text-gray-500 dark:text-gray-400 sm:text-center"
-        >© 2024
-        <a href="https://flowbite.com/" class="hover:underline">Amane</a>. All
-        Rights Reserved.</span
+        >© 2024 <a href="#" class="hover:underline">Amane</a>. All Rights
+        Reserved.</span
       >
     </div>
   </footer>

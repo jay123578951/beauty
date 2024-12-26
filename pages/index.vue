@@ -1,6 +1,4 @@
 <script setup>
-import { reactive } from "vue";
-
 const searchData = reactive({
   store: null,
   location: null,
@@ -22,19 +20,23 @@ definePageMeta({
 
 <template>
   <main class="px-4">
-    <section class="relative min-h-screen">
+    <section class="relative mb-10 xl:mb-0 xl:min-h-screen">
       <div
-        class="background-main relative z-10 mb-8 flex min-h-[70vh] flex-col items-center justify-between rounded-3xl bg-cover bg-local bg-center p-6"
+        class="background-main relative z-10 mb-8 flex flex-col items-center justify-between rounded-3xl bg-cover bg-local bg-center p-4 md:p-6 lg:min-h-[40vh] xl:min-h-[70vh]"
       >
-        <div class="w-full max-w-7xl py-12 font-light">
-          <h1 class="mb-3 text-6xl text-white text-opacity-[80%]">
+        <div class="w-full max-w-7xl py-4 font-light lg:py-12">
+          <h1
+            class="mb-3 text-3xl font-medium text-white text-opacity-[80%] lg:text-6xl lg:font-light"
+          >
             完美造型，隨時隨地
           </h1>
-          <p class="text-2xl text-white text-opacity-[80%]">
+          <p class="text-lg text-white text-opacity-[80%] lg:text-2xl">
             快速預約，輕鬆找到最適合你的髮型設計師！
           </p>
         </div>
-        <div class="flex w-full max-w-7xl rounded-2xl bg-white p-3">
+        <div
+          class="flex w-full max-w-7xl rounded-2xl bg-white py-6 md:px-4 lg:p-3"
+        >
           <SearchBar
             :formValue="searchData"
             @update:form-value="handleSearchDataUpdate"
@@ -49,23 +51,23 @@ definePageMeta({
       </div>
     </section>
 
-    <section class="relative z-10 m-auto max-w-7xl pb-40">
+    <section class="relative z-10 m-auto max-w-7xl pb-20 lg:pb-40">
       <div>
-        <div class="mb-20 w-1/3">
+        <div class="mb-10 lg:mb-20 lg:w-1/3">
           <h2 class="mb-4 text-3xl font-semibold">類型探索</h2>
           <p class="opacity-75">
             找到最符合您風格的美容院！透過我們精選的類型分類，您可以輕鬆篩選並發現提供您想要造型的專業設計師，打造專屬於您的完美造型。
           </p>
         </div>
-        <div class="m-auto flex max-w-5xl space-x-5">
-          <div class="h-[600px] w-2/4">
+        <div class="m-auto flex flex-col lg:max-w-5xl lg:flex-row lg:space-x-5">
+          <div class="mb-5 h-full w-full lg:mb-0 lg:h-[600px] lg:w-2/4">
             <img
-              class="h-full w-full rounded-3xl object-cover brightness-90"
+              class="aspect-square h-full w-full rounded-3xl object-cover brightness-90"
               src="/assets/img/indexSpecialEpisode.jpg"
               alt=""
             />
           </div>
-          <div class="h-[600px] w-2/4">
+          <div class="w-full lg:h-[600px] lg:w-2/4">
             <ul class="flex h-full flex-row flex-wrap gap-6">
               <li
                 class="relative flex h-[calc(100%/3-1rem)] w-full flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
@@ -229,18 +231,20 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto flex max-w-7xl flex-col items-end pb-40"
+      class="relative z-10 m-auto flex max-w-7xl flex-col items-end pb-20 lg:pb-40"
     >
-      <div class="mb-20 w-1/3">
+      <div class="mb-10 lg:mb-20 lg:w-1/3">
         <h2 class="mb-4 text-3xl font-semibold">沙龍推薦</h2>
         <p class="opacity-75">
           探索我們精心挑選的沙龍推薦，無論您是追求創新造型、健康護髮，還是放鬆身心，我們都為您提供最合適的選擇，助您輕鬆找到理想的沙龍體驗。
         </p>
       </div>
-      <div class="m-auto flex h-[600px] w-full max-w-5xl gap-5">
-        <ul class="flex h-full w-[27.5%] flex-col gap-5">
-          <li class="h-full w-full">
-            <div class="aspect-[3/2] brightness-90">
+      <div
+        class="m-auto flex w-full max-w-5xl flex-col gap-5 lg:h-[600px] lg:flex-row"
+      >
+        <ul class="flex h-full w-full gap-5 lg:w-[27.5%] lg:flex-col">
+          <li class="h-full w-1/2 lg:w-full">
+            <div class="aspect-square lg:aspect-[3/2]">
               <img
                 src="/img/recommend01.jpg"
                 alt=""
@@ -248,14 +252,14 @@ definePageMeta({
               />
             </div>
             <div>
-              <p class="my-3 text-lg font-medium">ALBUM 台北</p>
-              <p class="truncate text-sm opacity-75">
+              <p class="my-2 text-lg font-medium lg:my-3">ALBUM 台北</p>
+              <p class="line-clamp-1 text-sm opacity-75">
                 提供量身定制的髮型設計，以細膩手法和創新理念，打造出適合每位客人的獨特風格。
               </p>
             </div>
           </li>
-          <li class="h-full w-full">
-            <div class="aspect-[3/2]">
+          <li class="h-full w-1/2 lg:w-full">
+            <div class="aspect-square lg:aspect-[3/2]">
               <img
                 src="/img/recommend02.jpg"
                 alt=""
@@ -263,21 +267,21 @@ definePageMeta({
               />
             </div>
             <div>
-              <p class="my-3 text-lg font-medium">Belle 中山</p>
-              <p class="truncate text-sm opacity-75">
+              <p class="my-2 text-lg font-medium lg:my-3">Belle 中山</p>
+              <p class="line-clamp-1 text-sm opacity-75">
                 結合自然元素與現代技術，創造出自然且充滿生機的造型，適合追求簡約美感的顧客。
               </p>
             </div>
           </li>
         </ul>
-        <ul class="h-full w-[45%]">
+        <ul class="h-full w-full lg:w-[45%]">
           <li class="relative h-full w-full">
             <div
               class="via-bg-transparent absolute top-0 h-full w-full rounded-3xl bg-gradient-to-t from-primary-dark"
             ></div>
-            <div class="absolute bottom-0 w-full p-8 text-white">
+            <div class="absolute bottom-0 w-full p-6 text-white lg:p-8">
               <p class="my-3 text-lg font-medium">ZEST lill 信義</p>
-              <p class="truncate text-sm opacity-75">
+              <p class="line-clamp-1 text-sm opacity-75">
                 專為喜愛個性髮型的都市人設計，從俐落剪裁到前衛染髮，展現最自信的個人風格。
               </p>
             </div>
@@ -290,9 +294,9 @@ definePageMeta({
             </div>
           </li>
         </ul>
-        <ul class="flex h-full w-[27.5%] flex-col gap-5">
-          <li class="h-full w-full">
-            <div class="aspect-[3/2]">
+        <ul class="flex h-full w-full gap-5 lg:w-[27.5%] lg:flex-col">
+          <li class="h-full w-1/2 lg:w-full">
+            <div class="aspect-square lg:aspect-[3/2]">
               <img
                 src="/img/recommend04.jpg"
                 alt=""
@@ -300,23 +304,23 @@ definePageMeta({
               />
             </div>
             <div>
-              <p class="my-3 text-lg font-medium">foto 復興</p>
-              <p class="truncate text-sm opacity-75">
+              <p class="my-2 text-lg font-medium lg:my-3">foto 復興</p>
+              <p class="line-clamp-1 text-sm opacity-75">
                 專注於健康髮質與優雅風格，結合頂級護髮產品，為客人提供舒適的奢華體驗。
               </p>
             </div>
           </li>
-          <li class="h-full w-full">
-            <div class="aspect-[3/2]">
+          <li class="h-full w-1/2 lg:w-full">
+            <div class="aspect-square lg:aspect-[3/2]">
               <img
                 src="/img/recommend05.jpg"
                 alt=""
-                class="h-full w-full rounded-3xl object-cover"
+                class="aspect-square h-full w-full rounded-3xl object-cover"
               />
             </div>
             <div>
-              <p class="my-3 text-lg font-medium">Blossom 中山</p>
-              <p class="truncate text-sm opacity-75">
+              <p class="my-2 text-lg font-medium lg:my-3">Blossom 中山</p>
+              <p class="line-clamp-1 text-sm opacity-75">
                 以放鬆、療癒為主題的美容院，設有放鬆空間和精油護理，讓每次造型都成為身心靈的放鬆之旅。
               </p>
             </div>
@@ -326,9 +330,9 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto flex max-w-7xl flex-col items-center pb-40"
+      class="relative z-10 m-auto flex max-w-7xl flex-col items-center pb-20 lg:pb-40"
     >
-      <div class="z-10 mb-20 w-1/3 text-center">
+      <div class="z-10 mb-10 lg:mb-20 lg:w-1/3 lg:text-center">
         <h2 class="mb-4 text-3xl font-semibold">造型風格</h2>
         <p class="opacity-75">
           根據您喜愛的髮型風格，我們為您挑選了最適合的沙龍！無論是俐落短髮、柔美長捲，還是個性染髮，立即找到符合您風格的沙龍與設計師，實現理想造型。
@@ -339,42 +343,42 @@ definePageMeta({
       >
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle01.jpg"
             alt=""
           />
         </div>
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle02.jpg"
             alt=""
           />
         </div>
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle03.jpg"
             alt=""
           />
         </div>
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle04.jpg"
             alt=""
           />
         </div>
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle05.jpg"
             alt=""
           />
         </div>
         <div>
           <img
-            class="aspect-[3/2] h-full max-w-full rounded-3xl object-cover"
+            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
             src="/assets/img/hairStyle06.jpg"
             alt=""
           />

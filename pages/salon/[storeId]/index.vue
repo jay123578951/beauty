@@ -1,10 +1,12 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import { initCarousels } from "flowbite";
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 const route = useRoute();
+
 const storeId = ref(route.params.storeId);
 
 const lists = reactive([
@@ -29,9 +31,25 @@ const lists = reactive([
     name: "評論",
   },
 ]);
+const mobileLists = reactive([
+  {
+    id: "overview",
+    name: "總攬",
+  },
+  {
+    id: "designer",
+    name: "設計師",
+  },
+  {
+    id: "case",
+    name: "案例",
+  },
+  {
+    id: "comment",
+    name: "評論",
+  },
+]);
 
-const config = useRuntimeConfig();
-const apiUrl = config.public.apiUrl;
 const menus = reactive({
   data: [],
 });
@@ -110,12 +128,12 @@ onMounted(() => {
 <template>
   <NuxtLayout name="store">
     <template #title>
-      <h1 class="mb-4 text-3xl font-medium">ALBUM 台北</h1>
+      <h1 class="mb-2 text-xl font-medium lg:mb-4 lg:text-3xl">ALBUM 台北</h1>
       <div class="flex justify-between">
-        <p class="w-1/3">
+        <p class="w-full text-sm lg:w-1/3 lg:text-base">
           我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。
         </p>
-        <div>
+        <div class="mr-4 hidden lg:block">
           <div class="m-auto h-14 w-[1px] bg-primary-dark"></div>
           <div
             class="relative bottom-5 left-2 m-auto h-6 w-[1px] rotate-45 bg-primary-dark"
@@ -124,14 +142,16 @@ onMounted(() => {
       </div>
     </template>
     <template #banner>
-      <div class="mb-16 w-full">
+      <div class="w-full lg:mb-16">
         <div
           id="default-carousel"
           class="relative w-full"
           data-carousel="static"
         >
           <!-- Carousel wrapper -->
-          <div class="relative h-[70vh] overflow-hidden rounded-2xl">
+          <div
+            class="relative h-56 overflow-hidden rounded-2xl md:h-[40vh] lg:h-[70vh]"
+          >
             <!-- Item 1 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
               <img
@@ -226,8 +246,8 @@ onMounted(() => {
     </template>
     <template #content>
       <TabGroup as="template">
-        <div class="flex justify-between">
-          <div class="w-3/12">
+        <div class="hidden flex-col justify-between lg:flex lg:flex-row">
+          <div class="w-full lg:w-3/12">
             <TabList
               class="-mb-px flex flex-col divide-y divide-slate-300 border-y border-slate-300 font-medium"
             >
@@ -260,7 +280,7 @@ onMounted(() => {
               </Tab>
             </TabList>
           </div>
-          <div class="w-7/12">
+          <div class="w-full lg:w-7/12">
             <TabPanels>
               <!-- overview -->
               <TabPanel>
@@ -270,8 +290,8 @@ onMounted(() => {
               </TabPanel>
               <!-- menu -->
               <TabPanel>
-                <div class="mb-6 flex flex-wrap items-center">
-                  <div class="me-6">
+                <div class="items-top mb-6 flex">
+                  <div class="me-6 py-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -286,7 +306,9 @@ onMounted(() => {
                     </svg>
                   </div>
                   <div>
-                    <ul class="flex">
+                    <ul
+                      class="scrollbar-hide relative flex w-full snap-x gap-1 overflow-x-auto scroll-smooth"
+                    >
                       <li v-for="(tag, index) in tagsName" :key="index">
                         <input
                           v-model="checkedTags[index]"
@@ -297,11 +319,9 @@ onMounted(() => {
                         />
                         <label
                           :for="tag.id"
-                          class="my-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
+                          class="mb-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
                         >
-                          <div class="block">
-                            <div class="w-full">{{ tag.name }}</div>
-                          </div>
+                          <p>{{ tag.name }}</p>
                         </label>
                       </li>
                     </ul>
@@ -422,6 +442,166 @@ onMounted(() => {
           </div>
         </div>
       </TabGroup>
+
+      <!-- Mobile -->
+      <section class="lg:hidden">
+        <Disclosure>
+          <DisclosureButton
+            class="mb-6 w-full rounded-full bg-primary-dark py-3 text-white"
+          >
+            我要預約
+          </DisclosureButton>
+          <transition
+            enter-active-class="transition duration-400 ease-in-out origin-top"
+            enter-from-class="transform scale-y-50 opacity-0"
+            enter-to-class="transform scale-y-100 opacity-100"
+            leave-active-class="transition duration-375 ease-in-out origin-top"
+            leave-from-class="transform scale-y-100 opacity-100"
+            leave-to-class="transform scale-y-50 opacity-0"
+          >
+            <DisclosurePanel>
+              <div class="items-top mb-2 flex">
+                <div class="me-4 py-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <ul
+                  class="scrollbar-hide relative flex w-full snap-x gap-1 overflow-x-auto scroll-smooth"
+                >
+                  <li
+                    v-for="(tag, index) in tagsName"
+                    :key="index"
+                    class="min-w-fit"
+                  >
+                    <input
+                      v-model="checkedTags[index]"
+                      :id="tag.id"
+                      type="checkbox"
+                      class="peer hidden"
+                      @change="handleChecked"
+                    />
+                    <label
+                      :for="tag.id"
+                      class="mb-1 me-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary peer-checked:bg-primary-light peer-checked:text-primary-dark"
+                    >
+                      <p>{{ tag.name }}</p>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <ul class="mb-6 space-y-4">
+                <li
+                  v-for="(menu, index) in filteredMenus"
+                  :key="index"
+                  class="relative flex flex-col rounded-3xl border border-primary-light bg-white p-3 md:flex-row"
+                >
+                  <NuxtLink
+                    :to="`/salon/${storeId}/menu?menu_id=${menu.id}`"
+                    target="_blank"
+                  >
+                    <div
+                      class="relative mb-4 aspect-3/2 w-full overflow-hidden rounded-2xl md:mb-0"
+                    >
+                      <img
+                        :src="menu.img || '/img/hairStyle.jpg'"
+                        class="block h-full w-full object-cover"
+                        alt="..."
+                      />
+                    </div>
+                    <div class="p-2 pt-0 md:p-4">
+                      <h3
+                        class="mb-1 inline-flex flex-wrap items-center text-lg font-medium"
+                      >
+                        {{ menu.name }}
+                        <span
+                          class="ml-2 inline-block rounded bg-red-500 px-3 py-1 text-xs font-medium text-white"
+                        >
+                          {{ tagsName[menu.tag].name }}
+                        </span>
+                      </h3>
+                      <p class="mb-2 text-xl font-medium text-red-500">
+                        ${{ menu.price }}
+                      </p>
+                      <p class="mb-4 text-xs tracking-wider text-gray-700">
+                        {{ menu.description }}
+                      </p>
+                      <ul class="mb-1 flex">
+                        <li
+                          v-for="(tag, index) in menu.classification"
+                          :key="index"
+                        >
+                          <span
+                            class="me-1 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
+                            >{{ tag }}</span
+                          >
+                        </li>
+                      </ul>
+                      <ul class="mb-4 flex">
+                        <li v-for="(tag, index) in menu.points" :key="index">
+                          <span
+                            class="me-1 rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-500"
+                            >{{ tag }}</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </NuxtLink>
+                </li>
+              </ul>
+            </DisclosurePanel>
+          </transition>
+        </Disclosure>
+
+        <TabGroup>
+          <TabList class="mb-2 flex space-x-1 rounded-xl">
+            <Tab
+              v-for="(list, index) in mobileLists"
+              as="template"
+              :key="index"
+              v-slot="{ selected }"
+            >
+              <button
+                :class="[
+                  'w-full rounded-lg py-2.5 text-sm leading-5',
+                  'ring-0 focus:outline-none focus:ring-0',
+                  selected
+                    ? 'border-2 border-primary bg-primary-light'
+                    : 'border-gary-200 border-2 bg-white text-gray-500',
+                ]"
+              >
+                {{ list.name }}
+              </button>
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>總覽 Coming soon.</TabPanel>
+            <TabPanel>設計師 Coming soon.</TabPanel>
+            <TabPanel>案例 Coming soon.</TabPanel>
+            <TabPanel>評論 Coming soon.</TabPanel>
+          </TabPanels>
+        </TabGroup>
+      </section>
     </template>
   </NuxtLayout>
 </template>
+
+<style scoped>
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+</style>

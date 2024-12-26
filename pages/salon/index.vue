@@ -1,8 +1,8 @@
 <script setup>
-import { ref, reactive, onMounted, computed, watch } from "vue";
-import { useRoute } from "vue-router";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl;
 const route = useRoute();
 
 const searchData = reactive({
@@ -19,8 +19,6 @@ const stores = reactive({
   data: [],
 });
 
-const config = useRuntimeConfig();
-const apiUrl = config.public.apiUrl;
 async function handleFetchStores() {
   const ignoredKeys = ["dateRange"];
   const baseUrl = `${apiUrl}/api/stores`;
@@ -109,6 +107,7 @@ watch(
   { deep: true },
 );
 
+const mapRef = ref(null);
 const options = ref({
   mapId: "9f6d452625c83e6a",
   mapTypeId: "roadmap",
@@ -118,6 +117,7 @@ const options = ref({
   streetViewControl: false,
   rotateControl: false,
   fullscreenControl: false,
+  version: "weekly",
 });
 const center = ref({ lat: 25.0626695, lng: 121.5238994 });
 const openedMarkerID = ref(null);
@@ -158,19 +158,19 @@ definePageMeta({
   <NuxtLayout name="salon">
     <template #content>
       <div
-        class="relative h-[calc(100vh-130px-32px)] w-full overflow-hidden rounded-3xl border-2 border-primary p-6"
+        class="relative w-full lg:h-[calc(100vh-130px-32px)] lg:overflow-hidden lg:rounded-3xl lg:border-2 lg:border-primary lg:p-6"
       >
         <div
-          class="relative z-10 max-h-full w-[40%] overflow-y-auto rounded-3xl bg-white p-6"
+          class="relative z-10 max-h-full w-full lg:w-1/2 lg:overflow-y-auto lg:rounded-3xl lg:bg-white lg:p-6 xl:w-[40%]"
         >
-          <div class="mb-4 flex items-center justify-between">
-            <p class="text-lg font-medium">
+          <div class="mb-2 flex items-center justify-between lg:mb-4">
+            <p class="text-sm font-medium lg:text-lg">
               沙龍一覽：{{ stores.data.length }} 件
             </p>
             <div class="inline-flex rounded-md" role="group">
               <button
                 type="button"
-                class="inline-flex items-center bg-white px-2 py-2 text-sm font-medium"
+                class="inline-flex items-center px-2 py-2 text-sm font-medium"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +189,7 @@ definePageMeta({
               </button>
               <button
                 type="button"
-                class="inline-flex items-center bg-white px-2 py-2 text-sm font-medium"
+                class="inline-flex items-center px-2 py-2 text-sm font-medium"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -208,7 +208,7 @@ definePageMeta({
               </button>
               <Popover class="relative">
                 <PopoverButton
-                  class="inline-flex items-center bg-white px-2 py-2 text-sm font-medium"
+                  class="inline-flex items-center px-2 py-2 text-sm font-medium"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -224,7 +224,7 @@ definePageMeta({
                       d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
                     />
                   </svg>
-                  <p class="text-sm">排序</p>
+                  <p class="text-xs lg:text-sm">排序</p>
                 </PopoverButton>
                 <transition
                   enter-active-class="transition duration-200 ease-out"
@@ -263,23 +263,26 @@ definePageMeta({
               </Popover>
             </div>
           </div>
-          <ul
-            v-for="(store, index) in stores.data"
-            :key="`${store.id}-${index}`"
-          >
-            <li class="pb-4">
+          <ul class="mb-20 lg:mb-0">
+            <li
+              v-for="(store, index) in stores.data"
+              :key="`${store.id}-${index}`"
+              class="pb-4"
+            >
               <NuxtLink
                 :to="`/salon/${store.id}`"
-                class="flex cursor-pointer rounded-3xl border border-slate-300"
+                class="flex cursor-pointer flex-col rounded-3xl border border-slate-300 md:flex-row"
               >
                 <img
                   :src="store.img || '/img/store-default.jpg'"
-                  class="h-52 w-52 rounded-3xl object-cover"
-                  alt="..."
+                  :alt="store.name"
+                  class="aspect-video w-full rounded-3xl object-cover p-2 md:aspect-square md:w-52"
                 />
-                <div class="px-5 py-3">
+                <div class="px-3 pb-3 pt-0 md:px-5 md:pt-3">
                   <div class="mb-1 flex items-center">
-                    <h3 class="mr-4 text-2xl font-medium">{{ store.name }}</h3>
+                    <h3 class="mr-4 text-xl font-medium lg:text-2xl">
+                      {{ store.name }}
+                    </h3>
                     <!-- <span
                     class="ml-2 rounded bg-red-100 px-3 py-1 text-xs font-medium text-red-400"
                     >New</span
@@ -443,7 +446,7 @@ definePageMeta({
           <div
             v-if="!isToggle"
             ref="searchBtn"
-            class="absolute bottom-6 end-6 z-30"
+            class="fixed bottom-24 end-4 z-50 lg:absolute lg:bottom-6 lg:end-6"
           >
             <button
               @click="toggleSearchDrawer"
@@ -466,7 +469,7 @@ definePageMeta({
                   />
                 </svg>
               </div>
-              <div class="me-6 ms-4 text-start">
+              <div class="me-6 ms-4 hidden text-start lg:block">
                 <p v-if="searchData.store" class="mb-1 text-xs">
                   {{ searchData.store }} / {{ searchData.location }} /
                   {{ formattedDateRange }} / {{ searchData.services }}
@@ -483,7 +486,10 @@ definePageMeta({
           </div>
         </transition>
         <transition name="close-toggle">
-          <div v-if="isToggle" class="absolute bottom-6 end-6 z-30">
+          <div
+            v-if="isToggle"
+            class="fixed bottom-24 end-4 z-50 lg:absolute lg:bottom-6 lg:end-6"
+          >
             <button
               @click="toggleSearchDrawer"
               type="button"
@@ -509,12 +515,12 @@ definePageMeta({
           </div>
         </transition>
         <div
-          class="absolute z-20 flex items-end justify-end overflow-hidden bg-white"
+          class="fixed z-40 flex items-end justify-end overflow-y-scroll bg-white lg:absolute lg:overflow-hidden"
           :class="[
             isRounded ? 'rounded-full' : 'rounded-3xl',
             isExpanded
               ? 'bottom-0 end-0 h-full w-full'
-              : 'bottom-6 end-6 h-[76px]',
+              : 'bottom-[98px] end-4 h-[74px] w-[74px] lg:bottom-6 lg:end-6 lg:w-full',
             'origin-bottom-right transition-all duration-300 ease-in-out',
             isReady ? 'visible opacity-100' : 'invisible opacity-0',
           ]"
@@ -523,7 +529,7 @@ definePageMeta({
           <transition name="opened-menu">
             <div
               v-show="isToggle"
-              class="relative h-full w-full overflow-hidden"
+              class="relative h-full w-full lg:overflow-hidden"
             >
               <div
                 class="m-auto flex max-w-7xl flex-col items-center justify-center"
@@ -535,13 +541,17 @@ definePageMeta({
                   />
                 </div>
 
-                <div class="w-full px-3">
+                <div class="w-full px-3 pb-28 lg:pb-0">
                   <h2 class="pb-8 pt-4 text-lg font-medium">搜尋更多條件</h2>
                   <!-- <div
                     class="grid grid-flow-col grid-flow-col-dense grid-cols-4 grid-rows-2 gap-8"
                   > -->
-                  <div class="flex space-x-12">
-                    <div class="flex w-1/3 flex-col flex-wrap space-y-8">
+                  <div
+                    class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0"
+                  >
+                    <div
+                      class="flex w-full flex-col flex-wrap space-y-8 lg:w-1/3"
+                    >
                       <fieldset>
                         <legend class="mb-3 border-l-4 border-primary ps-2">
                           價格
@@ -731,7 +741,9 @@ definePageMeta({
                         </ul>
                       </fieldset>
                     </div>
-                    <div class="flex w-1/3 flex-col flex-wrap space-y-8">
+                    <div
+                      class="flex w-full flex-col flex-wrap space-y-8 lg:w-1/3"
+                    >
                       <fieldset>
                         <legend class="mb-3 border-l-4 border-primary ps-2">
                           評分
@@ -1173,42 +1185,45 @@ definePageMeta({
             </div>
           </transition>
         </div>
-        <GMapMap
-          ref="mapRef"
-          :center="center"
-          :options="options"
-          :zoom="13"
-          class="absolute left-0 top-0 z-0 h-full w-full"
-        >
-          <GMapMarker
-            v-for="(marker, index) in stores.data"
-            :key="index"
-            :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-            :clickable="true"
-            :draggable="false"
-            @click="goToStore(marker.id)"
-            @mouseover="openMarker(marker.id)"
-            @mouseout="openMarker(null)"
+        <client-only>
+          <GMapMap
+            v-if="isReady"
+            ref="mapRef"
+            :center="center"
+            :options="options"
+            :zoom="13"
+            class="absolute left-0 top-0 z-0 hidden h-full w-full lg:block"
           >
-            <GMapInfoWindow :opened="openedMarkerID === marker.id">
-              <NuxtLink :to="`/salon/${marker.id}`" class="flex items-center">
-                <img
-                  class="me-4 h-24 w-24 rounded-lg object-cover"
-                  :src="marker.img ? marker.img : '/img/store-default.jpg'"
-                  alt=""
-                />
-                <div class="font-normal">
-                  <p class="text-base font-medium">
-                    {{ marker.name }}
-                  </p>
-                  <div>{{ marker.rating }}</div>
-                  <div>{{ marker.location }}</div>
-                  <div>{{ marker.price }}~</div>
-                </div>
-              </NuxtLink>
-            </GMapInfoWindow>
-          </GMapMarker>
-        </GMapMap>
+            <GMapMarker
+              v-for="(marker, index) in stores.data"
+              :key="index"
+              :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+              :clickable="true"
+              :draggable="false"
+              @click="goToStore(marker.id)"
+              @mouseover="openMarker(marker.id)"
+              @mouseout="openMarker(null)"
+            >
+              <GMapInfoWindow :opened="openedMarkerID === marker.id">
+                <NuxtLink :to="`/salon/${marker.id}`" class="flex items-center">
+                  <img
+                    class="me-4 h-24 w-24 rounded-lg object-cover"
+                    :src="marker.img ? marker.img : '/img/store-default.jpg'"
+                    alt=""
+                  />
+                  <div class="font-normal">
+                    <p class="text-base font-medium">
+                      {{ marker.name }}
+                    </p>
+                    <div>{{ marker.rating }}</div>
+                    <div>{{ marker.location }}</div>
+                    <div>{{ marker.price }}~</div>
+                  </div>
+                </NuxtLink>
+              </GMapInfoWindow>
+            </GMapMarker>
+          </GMapMap>
+        </client-only>
       </div>
     </template>
   </NuxtLayout>
@@ -1217,20 +1232,34 @@ definePageMeta({
 <style scoped>
 .open-toggle-enter-active,
 .open-toggle-leave-active {
-  transition:
-    opacity 0.2s ease 0.1s,
-    scale 0.2s ease 0.1s;
-  transform-origin: right;
+  transition: opacity 0.2s ease 0.1s;
 }
 .open-toggle-enter-from,
 .open-toggle-leave-to {
   opacity: 0;
-  scale: 0 1;
 }
 .open-toggle-enter-to,
 .open-toggle-leave-from {
   opacity: 1;
-  scale: 1 1;
+}
+@media screen and (min-width: 1024px) {
+  .open-toggle-enter-active,
+  .open-toggle-leave-active {
+    transition:
+      opacity 0.2s ease 0.1s,
+      scale 0.2s ease 0.1s;
+    transform-origin: right;
+  }
+  .open-toggle-enter-from,
+  .open-toggle-leave-to {
+    opacity: 0;
+    scale: 0 1;
+  }
+  .open-toggle-enter-to,
+  .open-toggle-leave-from {
+    opacity: 1;
+    scale: 1 1;
+  }
 }
 
 .close-toggle-enter-active {

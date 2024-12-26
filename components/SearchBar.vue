@@ -1,6 +1,4 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
-
 const popover = ref({
   visibility: "click",
   placement: "bottom",
@@ -43,8 +41,8 @@ function handleSubmit() {
 
 <template>
   <form class="w-full" @submit.prevent="handleSubmit()">
-    <div class="flex">
-      <div class="mb-6 flex-1 px-3 md:mb-0">
+    <div class="flex flex-col flex-wrap md:flex-row">
+      <div class="mb-3 px-3 md:w-1/2 lg:mb-0 lg:flex-1">
         <label for="store" class="block text-sm leading-6">想找的地方</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <input
@@ -57,7 +55,7 @@ function handleSubmit() {
           />
         </div>
       </div>
-      <div class="mb-6 flex-1 px-3 md:mb-0">
+      <div class="mb-3 px-3 md:w-1/2 lg:mb-0 lg:flex-1">
         <label for="location" class="block text-sm leading-6">地點</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <select
@@ -72,7 +70,7 @@ function handleSubmit() {
           </select>
         </div>
       </div>
-      <div class="mb-6 flex-1 px-3 md:mb-0">
+      <div class="mb-3 px-3 md:w-1/2 lg:mb-0 lg:flex-1">
         <label for="date" class="block text-sm leading-6">日期</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <VDatePicker
@@ -103,7 +101,7 @@ function handleSubmit() {
           </VDatePicker>
         </div>
       </div>
-      <div class="mb-6 flex-1 px-3 md:mb-0">
+      <div class="mb-6 px-3 md:w-1/2 lg:mb-0 lg:flex-1">
         <label for="services" class="block text-sm leading-6">服務</label>
         <div class="relative mt-1 rounded-md shadow-sm">
           <select
@@ -121,7 +119,7 @@ function handleSubmit() {
           </select>
         </div>
       </div>
-      <div class="mb-6 flex flex-1 items-end px-3 md:mb-0 md:w-1/3">
+      <div class="mb-0 flex flex-1 items-end px-3">
         <button
           class="focus:shadow-outline relative w-full rounded rounded-md bg-primary-dark px-4 py-[7px] text-white hover:bg-gray-700 focus:outline-none"
           type="submit"
