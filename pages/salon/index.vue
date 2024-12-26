@@ -134,17 +134,14 @@ const isReady = ref(false);
 const searchBtn = ref(null);
 const searchBtnWidth = ref(0);
 
-onMounted(() => {
-  nextTick(() => {
-    if (searchBtn.value) {
-      const width = searchBtn.value.getBoundingClientRect().width;
-      searchBtnWidth.value = width;
-    }
+onMounted(async () => {
+  await nextTick();
+  isReady.value = true;
 
-    setTimeout(() => {
-      isReady.value = true;
-    }, 100);
-  });
+  await nextTick();
+  if (searchBtn.value) {
+    searchBtnWidth.value = searchBtn.value.getBoundingClientRect().width;
+  }
 
   handleFetchStores();
 });
@@ -157,7 +154,74 @@ definePageMeta({
 <template>
   <NuxtLayout name="salon">
     <template #content>
+      <!-- Skeleton -->
+      <div v-if="!isReady" class="h-[calc(100vh-96px)] lg:h-full">
+        <div role="status" class="mb-6 block max-w-sm animate-pulse lg:hidden">
+          <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+          <div class="mb-2.5 h-2 max-w-[360px] rounded-full bg-primary"></div>
+          <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+        </div>
+        <div
+          role="status"
+          class="w-[calc(100vw-2rem)] animate-pulse rounded-2xl border border-primary p-4 shadow md:p-6 lg:h-[calc(100vh-162px)]"
+        >
+          <div class="max-w-96 lg:mb-6">
+            <div
+              class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
+            >
+              <svg
+                class="h-10 w-10 text-primary"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 16 20"
+              >
+                <path
+                  d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
+                />
+                <path
+                  d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
+                />
+              </svg>
+            </div>
+            <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+            <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+            <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+            <div class="h-2 rounded-full bg-primary"></div>
+            <div class="mt-4 flex items-center">
+              <div>
+                <div class="mb-2 h-2.5 w-32 rounded-full bg-primary"></div>
+                <div class="h-2 w-48 rounded-full bg-primary"></div>
+              </div>
+            </div>
+            <span class="sr-only">Loading...</span>
+          </div>
+          <div class="hidden max-w-96 lg:block">
+            <div
+              class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
+            >
+              <svg
+                class="h-10 w-10 text-primary"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 16 20"
+              >
+                <path
+                  d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
+                />
+                <path
+                  d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
+                />
+              </svg>
+            </div>
+            <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+          </div>
+        </div>
+      </div>
+
       <div
+        v-else
         class="relative w-full lg:h-[calc(100vh-130px-32px)] lg:overflow-hidden lg:rounded-3xl lg:border-2 lg:border-primary lg:p-6"
       >
         <div
@@ -236,23 +300,19 @@ definePageMeta({
                 >
                   <PopoverPanel class="absolute z-30">
                     <div
-                      class="w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
+                      class="w-44 divide-y divide-gray-100 rounded-lg bg-white shadow"
                     >
                       <ul
-                        class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                        class="py-2 text-sm text-gray-700"
                         aria-labelledby="dropdownDefaultButton"
                       >
                         <li>
-                          <a
-                            href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          <a href="#" class="block px-4 py-2 hover:bg-gray-100"
                             >評分</a
                           >
                         </li>
                         <li>
-                          <a
-                            href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          <a href="#" class="block px-4 py-2 hover:bg-gray-100"
                             >價格</a
                           >
                         </li>
@@ -271,12 +331,12 @@ definePageMeta({
             >
               <NuxtLink
                 :to="`/salon/${store.id}`"
-                class="flex cursor-pointer flex-col rounded-3xl border border-slate-300 md:flex-row"
+                class="flex cursor-pointer flex-col rounded-2xl border border-slate-300 md:flex-row lg:rounded-3xl"
               >
                 <img
                   :src="store.img || '/img/store-default.jpg'"
                   :alt="store.name"
-                  class="aspect-video w-full rounded-3xl object-cover p-2 md:aspect-square md:w-52"
+                  class="aspect-video w-full rounded-2xl object-cover p-2 md:aspect-square md:w-52 lg:rounded-3xl"
                 />
                 <div class="px-3 pb-3 pt-0 md:px-5 md:pt-3">
                   <div class="mb-1 flex items-center">
@@ -334,7 +394,7 @@ definePageMeta({
                       />
                     </svg>
                     <svg
-                      class="me-1 h-4 w-4 text-gray-300"
+                      class="me-1 h-4 w-4 text-primary"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
@@ -344,9 +404,7 @@ definePageMeta({
                         d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
                       />
                     </svg>
-                    <p
-                      class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400"
-                    >
+                    <p class="ms-1 text-sm font-medium text-gray-500">
                       {{ store.rating }}
                     </p>
                   </div>
@@ -412,32 +470,6 @@ definePageMeta({
                     </li>
                   </ul>
                 </div>
-                <!-- <div class="flex flex-col items-end justify-between p-2">
-                <button
-                  type="button"
-                  class="inline-flex w-fit items-center rounded-full border border-red-500 p-2.5 text-center text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="size-5"
-                  >
-                    <path
-                      d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"
-                    />
-                  </svg>
-                  <span class="sr-only">Icon description</span>
-                </button>
-                <NuxtLink :to="`/salon/salon1`" target="_blank">
-                  <button
-                    type="button"
-                    class="whitespace-nowrap rounded-lg bg-blue-700 px-5 py-2.5 text-lg font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    查看菜單
-                  </button>
-                </NuxtLink>
-              </div> -->
               </NuxtLink>
             </li>
           </ul>
@@ -446,7 +478,7 @@ definePageMeta({
           <div
             v-if="!isToggle"
             ref="searchBtn"
-            class="fixed bottom-24 end-4 z-50 lg:absolute lg:bottom-6 lg:end-6"
+            class="fixed bottom-24 end-4 z-30 lg:absolute lg:bottom-6 lg:end-6"
           >
             <button
               @click="toggleSearchDrawer"
@@ -488,7 +520,7 @@ definePageMeta({
         <transition name="close-toggle">
           <div
             v-if="isToggle"
-            class="fixed bottom-24 end-4 z-50 lg:absolute lg:bottom-6 lg:end-6"
+            class="fixed bottom-24 end-4 z-30 lg:absolute lg:bottom-6 lg:end-6"
           >
             <button
               @click="toggleSearchDrawer"
@@ -514,8 +546,10 @@ definePageMeta({
             </button>
           </div>
         </transition>
+
+        <!-- Search Modal -->
         <div
-          class="fixed z-40 flex items-end justify-end overflow-y-scroll bg-white lg:absolute lg:overflow-hidden"
+          class="fixed z-20 flex items-end justify-end overflow-y-scroll bg-white px-4 lg:absolute lg:overflow-hidden xl:px-0"
           :class="[
             isRounded ? 'rounded-full' : 'rounded-3xl',
             isExpanded
@@ -532,8 +566,13 @@ definePageMeta({
               class="relative h-full w-full lg:overflow-hidden"
             >
               <div
-                class="m-auto flex max-w-7xl flex-col items-center justify-center"
+                class="m-auto flex max-w-md flex-col items-center justify-center lg:max-w-7xl"
               >
+                <h2
+                  class="mt-8 block w-full px-4 text-start text-lg font-medium lg:hidden"
+                >
+                  想尋找其他地方嗎？
+                </h2>
                 <div class="my-8 w-full">
                   <SearchBar
                     :formValue="searchData"
@@ -542,10 +581,7 @@ definePageMeta({
                 </div>
 
                 <div class="w-full px-3 pb-28 lg:pb-0">
-                  <h2 class="pb-8 pt-4 text-lg font-medium">搜尋更多條件</h2>
-                  <!-- <div
-                    class="grid grid-flow-col grid-flow-col-dense grid-cols-4 grid-rows-2 gap-8"
-                  > -->
+                  <h2 class="mb-8 pt-4 text-lg font-medium">搜尋更多條件</h2>
                   <div
                     class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0"
                   >
@@ -566,26 +602,26 @@ definePageMeta({
                             value="2000"
                             min="100"
                             max="2000"
-                            class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+                            class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
                           />
                           <span
-                            class="absolute -bottom-6 start-0 text-sm text-gray-500 dark:text-gray-400"
+                            class="absolute -bottom-6 start-0 text-sm text-gray-500"
                             >$100</span
                           >
                           <span
-                            class="absolute -bottom-6 start-1/4 -translate-x-1/2 text-sm text-gray-500 dark:text-gray-400 rtl:translate-x-1/2"
+                            class="absolute -bottom-6 start-1/4 -translate-x-1/2 text-sm text-gray-500 rtl:translate-x-1/2"
                             >$500</span
                           >
                           <span
-                            class="absolute -bottom-6 start-2/4 -translate-x-1/2 text-sm text-gray-500 dark:text-gray-400 rtl:translate-x-1/2"
+                            class="absolute -bottom-6 start-2/4 -translate-x-1/2 text-sm text-gray-500 rtl:translate-x-1/2"
                             >$1000</span
                           >
                           <span
-                            class="absolute -bottom-6 start-3/4 -translate-x-1/2 text-sm text-gray-500 dark:text-gray-400 rtl:translate-x-1/2"
+                            class="absolute -bottom-6 start-3/4 -translate-x-1/2 text-sm text-gray-500 rtl:translate-x-1/2"
                             >$1500</span
                           >
                           <span
-                            class="absolute -bottom-6 end-0 text-sm text-gray-500 dark:text-gray-400"
+                            class="absolute -bottom-6 end-0 text-sm text-gray-500"
                             >$2000+</span
                           >
                         </div>
@@ -605,7 +641,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -622,7 +658,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -639,7 +675,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -656,7 +692,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -680,7 +716,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -697,7 +733,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -714,7 +750,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -731,7 +767,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -754,11 +790,11 @@ definePageMeta({
                               id="default-checkbox"
                               type="checkbox"
                               value=""
-                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                              class="h-4 w-4 rounded border-primary bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                             />
                             <label
                               for="default-checkbox"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                              class="ms-2 text-sm font-medium text-gray-900"
                             >
                               <div class="flex items-center">
                                 <svg
@@ -824,11 +860,11 @@ definePageMeta({
                               id="default-checkbox"
                               type="checkbox"
                               value=""
-                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                             />
                             <label
                               for="default-checkbox"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                              class="ms-2 text-sm font-medium text-gray-900"
                             >
                               <div class="flex items-center">
                                 <svg
@@ -876,7 +912,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -894,11 +930,11 @@ definePageMeta({
                               id="default-checkbox"
                               type="checkbox"
                               value=""
-                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                             />
                             <label
                               for="default-checkbox"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                              class="ms-2 text-sm font-medium text-gray-900"
                             >
                               <div class="flex items-center">
                                 <svg
@@ -935,7 +971,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -946,7 +982,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -964,11 +1000,11 @@ definePageMeta({
                               id="default-checkbox"
                               type="checkbox"
                               value=""
-                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                             />
                             <label
                               for="default-checkbox"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                              class="ms-2 text-sm font-medium text-gray-900"
                             >
                               <div class="flex items-center">
                                 <svg
@@ -994,7 +1030,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1005,7 +1041,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1016,7 +1052,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1035,11 +1071,11 @@ definePageMeta({
                               id="checked-checkbox"
                               type="checkbox"
                               value=""
-                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
                             />
                             <label
                               for="checked-checkbox"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                              class="ms-2 text-sm font-medium text-gray-900"
                             >
                               <div class="flex items-center">
                                 <svg
@@ -1054,7 +1090,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1065,7 +1101,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1076,7 +1112,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1087,7 +1123,7 @@ definePageMeta({
                                   />
                                 </svg>
                                 <svg
-                                  class="ms-1 h-4 w-4 text-gray-300 dark:text-gray-500"
+                                  class="ms-1 h-4 w-4 text-gray-300"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1117,7 +1153,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -1134,7 +1170,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -1151,7 +1187,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -1168,7 +1204,7 @@ definePageMeta({
                             />
                             <label
                               for="creditCard"
-                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                              class="mb-2 mr-2 inline-flex cursor-pointer items-center justify-between rounded-full border-2 border-gray-200 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-600 peer-checked:text-gray-600"
                             >
                               <div class="block">
                                 <div class="w-full">信用卡支付 OK</div>
@@ -1185,6 +1221,8 @@ definePageMeta({
             </div>
           </transition>
         </div>
+
+        <!-- Map -->
         <client-only>
           <GMapMap
             v-if="isReady"

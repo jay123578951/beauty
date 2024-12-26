@@ -22,7 +22,7 @@ definePageMeta({
   <main class="px-4">
     <section class="relative mb-10 xl:mb-0 xl:min-h-screen">
       <div
-        class="background-main relative z-10 mb-8 flex flex-col items-center justify-between rounded-3xl bg-cover bg-local bg-center p-4 md:p-6 lg:min-h-[40vh] xl:min-h-[70vh]"
+        class="background-main relative z-10 mb-8 flex flex-col items-center justify-between rounded-2xl bg-cover bg-local bg-center p-4 md:p-6 lg:min-h-[40vh] lg:rounded-3xl xl:min-h-[70vh]"
       >
         <div class="w-full max-w-7xl py-4 font-light lg:py-12">
           <h1
@@ -51,26 +51,32 @@ definePageMeta({
       </div>
     </section>
 
-    <section class="relative z-10 m-auto max-w-7xl pb-20 lg:pb-40">
+    <section
+      class="relative z-10 m-auto px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
+    >
       <div>
-        <div class="mb-10 lg:mb-20 lg:w-1/3">
-          <h2 class="mb-4 text-3xl font-semibold">類型探索</h2>
-          <p class="opacity-75">
+        <div class="mb-10 md:w-1/2 lg:mb-20 xl:w-1/3">
+          <h2 class="mb-2 text-2xl font-semibold lg:mb-4 lg:text-3xl">
+            類型探索
+          </h2>
+          <p class="text-sm opacity-75 lg:text-base">
             找到最符合您風格的美容院！透過我們精選的類型分類，您可以輕鬆篩選並發現提供您想要造型的專業設計師，打造專屬於您的完美造型。
           </p>
         </div>
-        <div class="m-auto flex flex-col lg:max-w-5xl lg:flex-row lg:space-x-5">
-          <div class="mb-5 h-full w-full lg:mb-0 lg:h-[600px] lg:w-2/4">
+        <div class="m-auto flex flex-col md:max-w-5xl md:flex-row md:space-x-5">
+          <div
+            class="mb-3 aspect-3/2 h-full w-full md:mb-0 md:aspect-auto md:h-[514px] md:w-1/2 lg:h-[600px]"
+          >
             <img
-              class="aspect-square h-full w-full rounded-3xl object-cover brightness-90"
+              class="h-full w-full rounded-2xl object-cover brightness-90 lg:rounded-3xl"
               src="/assets/img/indexSpecialEpisode.jpg"
               alt=""
             />
           </div>
-          <div class="w-full lg:h-[600px] lg:w-2/4">
-            <ul class="flex h-full flex-row flex-wrap gap-6">
+          <div class="w-full md:w-1/2 lg:h-[600px]">
+            <ul class="flex h-full flex-row flex-wrap gap-3 lg:gap-6">
               <li
-                class="relative flex h-[calc(100%/3-1rem)] w-full flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
+                class="relative flex h-40 w-full flex-col items-start justify-between rounded-2xl bg-white bg-opacity-75 p-6 lg:h-[calc(100%/3-1rem)] lg:rounded-3xl lg:p-8"
               >
                 <div class="mt-2 w-9 opacity-50">
                   <svg
@@ -101,7 +107,7 @@ definePageMeta({
                 <p class="w-full font-light tracking-wider">菜單</p>
               </li>
               <li
-                class="relative flex h-[calc(100%/3-1rem)] w-[calc(100%/2-0.75rem)] flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
+                class="relative flex aspect-square h-[calc(100%/3-1rem)] w-[calc(100%/2-0.375rem)] flex-col items-start justify-between rounded-2xl bg-white bg-opacity-75 p-6 lg:aspect-auto lg:w-[calc(100%/2-0.75rem)] lg:rounded-3xl lg:p-8"
               >
                 <div class="mt-2 w-9 opacity-50">
                   <svg
@@ -132,7 +138,7 @@ definePageMeta({
                 <p class="w-full font-light tracking-wider">男性</p>
               </li>
               <li
-                class="relative flex h-[calc(100%/3-1rem)] w-[calc(100%/2-0.75rem)] flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
+                class="relative flex aspect-square h-[calc(100%/3-1rem)] w-[calc(100%/2-0.375rem)] flex-col items-start justify-between rounded-2xl bg-white bg-opacity-75 p-6 lg:aspect-auto lg:w-[calc(100%/2-0.75rem)] lg:rounded-3xl lg:p-8"
               >
                 <div class="mt-2 w-9 opacity-50">
                   <svg
@@ -163,7 +169,7 @@ definePageMeta({
                 <p class="w-full font-light tracking-wider">女性</p>
               </li>
               <li
-                class="relative flex h-[calc(100%/3-1rem)] w-[calc(100%/2-0.75rem)] flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
+                class="relative flex aspect-square h-[calc(100%/3-1rem)] w-[calc(100%/2-0.375rem)] flex-col items-start justify-between rounded-2xl bg-white bg-opacity-75 p-6 lg:aspect-auto lg:w-[calc(100%/2-0.75rem)] lg:rounded-3xl lg:p-8"
               >
                 <div class="mt-2 w-9 opacity-50">
                   <svg
@@ -194,7 +200,7 @@ definePageMeta({
                 <p class="w-full font-light tracking-wider">價格</p>
               </li>
               <li
-                class="relative flex h-[calc(100%/3-1rem)] w-[calc(100%/2-0.75rem)] flex-col items-start justify-between rounded-3xl bg-white bg-opacity-75 p-8"
+                class="relative flex aspect-square h-[calc(100%/3-1rem)] w-[calc(100%/2-0.375rem)] flex-col items-start justify-between rounded-2xl bg-white bg-opacity-75 p-6 lg:aspect-auto lg:w-[calc(100%/2-0.75rem)] lg:rounded-3xl lg:p-8"
               >
                 <div class="mt-2 w-9 opacity-50">
                   <svg
@@ -231,50 +237,54 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto flex max-w-7xl flex-col items-end pb-20 lg:pb-40"
+      class="relative z-10 m-auto flex flex-col items-end px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
     >
-      <div class="mb-10 lg:mb-20 lg:w-1/3">
-        <h2 class="mb-4 text-3xl font-semibold">沙龍推薦</h2>
-        <p class="opacity-75">
+      <div class="xl:w-1/ mb-10 md:w-1/2 lg:mb-20">
+        <h2 class="mb-2 text-2xl font-semibold lg:mb-4 lg:text-3xl">
+          沙龍推薦
+        </h2>
+        <p class="text-sm opacity-75 lg:text-base">
           探索我們精心挑選的沙龍推薦，無論您是追求創新造型、健康護髮，還是放鬆身心，我們都為您提供最合適的選擇，助您輕鬆找到理想的沙龍體驗。
         </p>
       </div>
       <div
-        class="m-auto flex w-full max-w-5xl flex-col gap-5 lg:h-[600px] lg:flex-row"
+        class="m-auto flex w-full max-w-5xl flex-col gap-5 md:h-[450px] md:flex-row md:gap-3 lg:h-[600px] lg:gap-5"
       >
-        <ul class="flex h-full w-full gap-5 lg:w-[27.5%] lg:flex-col">
-          <li class="h-full w-1/2 lg:w-full">
-            <div class="aspect-square lg:aspect-[3/2]">
+        <ul
+          class="flex h-full w-full flex-col gap-5 md:w-[27.5%] md:flex-row md:flex-col"
+        >
+          <li class="h-full w-full">
+            <div class="aspect-video md:aspect-[3/2]">
               <img
                 src="/img/recommend01.jpg"
                 alt=""
-                class="h-full w-full rounded-3xl object-cover"
+                class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
               />
             </div>
             <div>
-              <p class="my-2 text-lg font-medium lg:my-3">ALBUM 台北</p>
+              <p class="my-2 text-lg font-medium md:my-3">ALBUM 台北</p>
               <p class="line-clamp-1 text-sm opacity-75">
                 提供量身定制的髮型設計，以細膩手法和創新理念，打造出適合每位客人的獨特風格。
               </p>
             </div>
           </li>
-          <li class="h-full w-1/2 lg:w-full">
-            <div class="aspect-square lg:aspect-[3/2]">
+          <li class="h-full w-full">
+            <div class="aspect-video md:aspect-[3/2]">
               <img
                 src="/img/recommend02.jpg"
                 alt=""
-                class="h-full w-full rounded-3xl object-cover"
+                class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
               />
             </div>
             <div>
-              <p class="my-2 text-lg font-medium lg:my-3">Belle 中山</p>
+              <p class="my-2 text-lg font-medium md:my-3">Belle 中山</p>
               <p class="line-clamp-1 text-sm opacity-75">
                 結合自然元素與現代技術，創造出自然且充滿生機的造型，適合追求簡約美感的顧客。
               </p>
             </div>
           </li>
         </ul>
-        <ul class="h-full w-full lg:w-[45%]">
+        <ul class="order-first h-full w-full md:order-none md:w-[45%]">
           <li class="relative h-full w-full">
             <div
               class="via-bg-transparent absolute top-0 h-full w-full rounded-3xl bg-gradient-to-t from-primary-dark"
@@ -285,41 +295,43 @@ definePageMeta({
                 專為喜愛個性髮型的都市人設計，從俐落剪裁到前衛染髮，展現最自信的個人風格。
               </p>
             </div>
-            <div class="h-full">
+            <div class="aspect-3/2 md:aspect-auto md:h-full">
               <img
                 src="/img/recommend03.jpg"
                 alt=""
-                class="h-full w-auto rounded-3xl object-cover"
+                class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
               />
             </div>
           </li>
         </ul>
-        <ul class="flex h-full w-full gap-5 lg:w-[27.5%] lg:flex-col">
-          <li class="h-full w-1/2 lg:w-full">
-            <div class="aspect-square lg:aspect-[3/2]">
+        <ul
+          class="flex h-full w-full flex-col gap-5 md:w-[27.5%] md:flex-row md:flex-col"
+        >
+          <li class="h-full w-full">
+            <div class="aspect-video md:aspect-[3/2]">
               <img
                 src="/img/recommend04.jpg"
                 alt=""
-                class="h-full w-full rounded-3xl object-cover"
+                class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
               />
             </div>
             <div>
-              <p class="my-2 text-lg font-medium lg:my-3">foto 復興</p>
+              <p class="my-2 text-lg font-medium md:my-3">foto 復興</p>
               <p class="line-clamp-1 text-sm opacity-75">
                 專注於健康髮質與優雅風格，結合頂級護髮產品，為客人提供舒適的奢華體驗。
               </p>
             </div>
           </li>
-          <li class="h-full w-1/2 lg:w-full">
-            <div class="aspect-square lg:aspect-[3/2]">
+          <li class="h-full w-full">
+            <div class="aspect-video md:aspect-[3/2]">
               <img
                 src="/img/recommend05.jpg"
                 alt=""
-                class="aspect-square h-full w-full rounded-3xl object-cover"
+                class="aspect-square h-full w-full rounded-2xl object-cover lg:rounded-3xl"
               />
             </div>
             <div>
-              <p class="my-2 text-lg font-medium lg:my-3">Blossom 中山</p>
+              <p class="my-2 text-lg font-medium md:my-3">Blossom 中山</p>
               <p class="line-clamp-1 text-sm opacity-75">
                 以放鬆、療癒為主題的美容院，設有放鬆空間和精油護理，讓每次造型都成為身心靈的放鬆之旅。
               </p>
@@ -330,60 +342,62 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto flex max-w-7xl flex-col items-center pb-20 lg:pb-40"
+      class="relative z-10 m-auto flex flex-col items-center px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
     >
-      <div class="z-10 mb-10 lg:mb-20 lg:w-1/3 lg:text-center">
-        <h2 class="mb-4 text-3xl font-semibold">造型風格</h2>
-        <p class="opacity-75">
+      <div class="z-10 mb-10 md:w-1/2 md:text-center lg:mb-20 xl:w-1/3">
+        <h2 class="mb-2 text-2xl font-semibold lg:mb-4 lg:text-3xl">
+          造型風格
+        </h2>
+        <p class="text-sm opacity-75 lg:text-base">
           根據您喜愛的髮型風格，我們為您挑選了最適合的沙龍！無論是俐落短髮、柔美長捲，還是個性染髮，立即找到符合您風格的沙龍與設計師，實現理想造型。
         </p>
       </div>
-      <div
-        class="relative z-10 m-auto grid max-w-5xl grid-cols-2 gap-5 md:grid-cols-3"
+      <ul
+        class="relative z-10 m-auto grid max-w-5xl grid-cols-2 gap-3 md:grid-cols-3 lg:gap-5"
       >
-        <div>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle01.jpg"
             alt=""
           />
-        </div>
-        <div>
+        </li>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle02.jpg"
             alt=""
           />
-        </div>
-        <div>
+        </li>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle03.jpg"
             alt=""
           />
-        </div>
-        <div>
+        </li>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle04.jpg"
             alt=""
           />
-        </div>
-        <div>
+        </li>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle05.jpg"
             alt=""
           />
-        </div>
-        <div>
+        </li>
+        <li class="aspect-square lg:aspect-[3/2]">
           <img
-            class="aspect-square h-full max-w-full rounded-3xl object-cover lg:aspect-[3/2]"
+            class="h-full w-full rounded-2xl object-cover lg:rounded-3xl"
             src="/assets/img/hairStyle06.jpg"
             alt=""
           />
-        </div>
-      </div>
+        </li>
+      </ul>
       <div class="inset-x-6v absolute inset-x-0 bottom-0 z-0 m-auto max-w-7xl">
         <svg
           class="w-full"

@@ -28,7 +28,6 @@ const loginFormValues = ref({
   username: null,
   password: null,
 });
-const isLoginModalOpen = ref(false);
 const error = ref(false);
 async function login() {
   try {
@@ -69,6 +68,9 @@ async function logout() {
       const userStore = useUserStore();
 
       userStore.clearUser();
+
+      loginFormValues.value.username = null;
+      loginFormValues.value.password = null;
     } else {
       console.error("Logout failed");
     }
@@ -76,11 +78,33 @@ async function logout() {
     console.error("Network error:", error);
   }
 }
+
+const isHidden = ref(false);
+let lastScrollY = 0;
+const handleScroll = () => {
+  const currentScrollY = window.scrollY;
+
+  if (currentScrollY > lastScrollY) {
+    isHidden.value = true;
+  } else {
+    isHidden.value = false;
+  }
+
+  lastScrollY = currentScrollY;
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <template>
   <header
-    class="top-0 z-40 flex w-full items-center justify-between p-4 lg:sticky lg:py-8"
+    class="sticky top-0 z-40 flex w-full items-center justify-between p-4 py-8"
   >
     <nav
       class="flex w-[56px] items-center rounded-full bg-primary p-1 drop-shadow-xl lg:w-fit"
@@ -131,17 +155,14 @@ async function logout() {
       </div>
     </nav>
 
-    <nav
-      class="hidden w-fit rounded-full bg-white drop-shadow-xl lg:block"
-      aria-label="Global"
-    >
+    <nav class="w-fit rounded-full bg-white drop-shadow-xl" aria-label="Global">
       <PopoverGroup class="flex justify-end">
         <Popover class="relative">
           <PopoverButton
             class="group flex items-center rounded-full bg-primary p-1 leading-6 text-gray-900 ring-0 focus-visible:outline-none"
           >
             <div
-              class="mr-2 transform rounded-full bg-primary-light p-2 transition-all delay-200 group-hover:hidden"
+              class="mr-1 transform rounded-full bg-primary-light p-1 transition-all delay-200 lg:mr-2 lg:p-2 lg:group-hover:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -158,14 +179,21 @@ async function logout() {
                 />
               </svg>
             </div>
-            <span
-              v-if="!isLoggedIn"
-              class="transform rounded-full bg-primary-dark px-12 py-4 text-white transition-all ease-out group-hover:px-20"
-              >登入</span
-            >
+            <template v-if="!isLoggedIn">
+              <span
+                class="hidden transform rounded-full bg-primary-dark px-12 py-3 text-white transition-all ease-out lg:block lg:py-4 lg:group-hover:px-20"
+                >登入</span
+              >
+              <!-- Mobile login button -->
+              <NuxtLink
+                to="/session"
+                class="block transform rounded-full bg-primary-dark px-12 py-3 text-white transition-all ease-out lg:hidden lg:py-4 lg:group-hover:px-20"
+                >登入</NuxtLink
+              >
+            </template>
             <span
               v-else
-              class="transform rounded-full bg-primary-dark px-12 py-4 text-white transition-all ease-out group-hover:px-20"
+              class="transform rounded-full bg-primary-dark px-12 py-4 text-white transition-all ease-out lg:group-hover:px-20"
               >{{ user.username }}</span
             >
           </PopoverButton>
@@ -325,42 +353,12 @@ async function logout() {
       </PopoverGroup>
     </nav>
 
-    <!-- Mobile -->
-
-    <button
-      class="group block flex items-center rounded-full bg-primary p-1 leading-6 text-gray-900 ring-0 focus-visible:outline-none lg:hidden"
-    >
-      <div class="mr-1 transform rounded-full bg-primary-light p-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="0.6"
-          stroke="currentColor"
-          class="size-10 text-primary-dark"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-          />
-        </svg>
-      </div>
-      <span
-        v-if="!isLoggedIn"
-        class="transform rounded-full bg-primary-dark px-12 py-3 text-white"
-        @click="isLoginModalOpen = true"
-        >登入</span
-      >
-      <span
-        v-else
-        class="transform rounded-full bg-primary-dark px-12 py-4 text-white"
-        >{{ user.username }}</span
-      >
-    </button>
-
+    <!-- Bottom navigation -->
     <nav
-      class="fixed bottom-4 left-4 z-40 h-16 w-[calc(100%-32px)] rounded-full bg-white drop-shadow-xl lg:hidden"
+      class="fixed bottom-4 left-4 z-20 h-16 w-[calc(100%-32px)] rounded-full bg-white drop-shadow-xl transition-all duration-300 lg:hidden"
+      :class="
+        isHidden ? '-translate-y-4 opacity-0' : 'translate-y-0 opacity-100'
+      "
     >
       <div class="mx-auto grid h-full max-w-lg grid-cols-4">
         <button
@@ -446,99 +444,5 @@ async function logout() {
         </button>
       </div>
     </nav>
-
-    <!-- 登入 modal -->
-    <TransitionRoot appear :show="isLoginModalOpen" as="template">
-      <Dialog as="div" @close="isLoginModalOpen = false" class="relative z-40">
-        <TransitionChild
-          as="template"
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-black/25" />
-        </TransitionChild>
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
-          >
-            <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95"
-            >
-              <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-              >
-                <DialogTitle
-                  as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
-                >
-                  會員登入
-                </DialogTitle>
-                <form class="mb-4 rounded px-8 pb-8 pt-6">
-                  <div class="mb-4">
-                    <label
-                      class="mb-2 block text-sm font-bold text-gray-700"
-                      for="username"
-                    >
-                      帳號
-                    </label>
-                    <input
-                      v-model="loginFormValues.username"
-                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
-                      id="username"
-                      type="text"
-                      placeholder=""
-                    />
-                  </div>
-                  <div class="mb-6">
-                    <label
-                      class="mb-2 block text-sm font-bold text-gray-700"
-                      for="password"
-                    >
-                      密碼
-                    </label>
-                    <input
-                      v-model="loginFormValues.password"
-                      class="focus:shadow-outline mb-3 w-full appearance-none rounded px-3 py-2 leading-tight focus:border-primary focus:outline-none focus:ring-primary"
-                      id="password"
-                      type="password"
-                      placeholder="******************"
-                    />
-                    <p v-if="error" class="text-xs italic text-red-500">
-                      請檢查帳號或密碼
-                    </p>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <button
-                      @click="login"
-                      class="focus:shadow-outline rounded bg-gray-800 px-4 py-2 font-bold text-white hover:bg-gray-700 focus:outline-none"
-                      type="button"
-                    >
-                      登入
-                    </button>
-                    <a
-                      class="inline-block align-baseline text-sm text-gray-500 hover:text-gray-800"
-                      href="#"
-                    >
-                      忘記密碼?
-                    </a>
-                  </div>
-                </form>
-              </DialogPanel>
-            </TransitionChild>
-          </div>
-        </div>
-      </Dialog>
-    </TransitionRoot>
   </header>
 </template>

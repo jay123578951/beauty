@@ -283,7 +283,7 @@ function handleDateSelect(selectInfo) {
   stylist.value =
     selectedStylist.value === "notSpecified" ? null : selectedStylist.value;
   menu.value = menuId.value;
-  selected.value = parseISO(selectInfo.startStr);
+  selected.value = parseISO(selectInfo.dateStr);
   date.value = format(selected.value, "yyyy-MM-dd");
   currentTime.value = format(selected.value, "HH:mm:ss");
   futureTime.value = format(addHours(selected.value, 1), "HH:mm:ss");
@@ -296,6 +296,8 @@ function handleDateSelect(selectInfo) {
     start_time: currentTime,
     end_time: futureTime,
   };
+
+  console.log(scheduleData.value);
 
   const isAfterToday = isAfter(new Date(selected.value), new Date());
 
@@ -385,7 +387,7 @@ const calendarOptions = ref({
     };
   },
   selectable: true,
-  select: handleDateSelect,
+  dateClick: handleDateSelect,
 });
 
 definePageMeta({

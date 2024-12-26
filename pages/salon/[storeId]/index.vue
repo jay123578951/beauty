@@ -331,7 +331,7 @@ onMounted(() => {
                   <li
                     v-for="(menu, index) in filteredMenus"
                     :key="index"
-                    class="group relative flex space-x-4 rounded-3xl border border-primary-light bg-white p-3 hover:border-primary"
+                    class="group relative flex space-x-4 rounded-2xl border border-primary-light bg-white p-3 hover:border-primary lg:rounded-3xl"
                   >
                     <div
                       class="relative h-56 w-full max-w-56 overflow-hidden rounded-2xl"
