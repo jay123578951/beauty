@@ -1,8 +1,9 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Loader } from "@googlemaps/js-api-loader";
 
 const config = useRuntimeConfig();
-const apiUrl = config.public.apiUrl;
+const { apiUrl, googleMapsApiKey } = config.public;
 const route = useRoute();
 
 const searchData = reactive({
@@ -107,9 +108,13 @@ watch(
   { deep: true },
 );
 
-const mapRef = ref(null);
-const options = ref({
-  mapId: "9f6d452625c83e6a",
+const mapDiv = ref(null);
+const mapOptions = {
+  center: {
+    lat: 25.0626695,
+    lng: 121.5238994,
+  },
+  zoom: 14,
   mapTypeId: "roadmap",
   zoomControl: false,
   mapTypeControl: false,
@@ -117,33 +122,79 @@ const options = ref({
   streetViewControl: false,
   rotateControl: false,
   fullscreenControl: false,
+};
+const loader = new Loader({
+  apiKey: googleMapsApiKey,
   version: "weekly",
 });
-const center = ref({ lat: 25.0626695, lng: 121.5238994 });
-const openedMarkerID = ref(null);
-
-function openMarker(markId) {
-  openedMarkerID.value = markId;
-}
-
-async function goToStore(id) {
-  await navigateTo(`/salon/${id}`);
-}
 
 const isReady = ref(false);
 const searchBtn = ref(null);
 const searchBtnWidth = ref(0);
 
 onMounted(async () => {
+  await handleFetchStores();
+
   await nextTick();
-  isReady.value = true;
+  setTimeout(() => {
+    isReady.value = true;
+  }, 1000);
 
   await nextTick();
   if (searchBtn.value) {
     searchBtnWidth.value = searchBtn.value.getBoundingClientRect().width;
   }
 
-  handleFetchStores();
+  await loader.importLibrary("maps");
+  if (mapDiv.value) {
+    const map = new google.maps.Map(mapDiv.value, {
+      ...mapOptions,
+    });
+
+    stores.data.forEach((marker) => {
+      const gMarker = new google.maps.Marker({
+        position: { lat: Number(marker.lat), lng: Number(marker.lng) },
+        map: map,
+        title: marker.name,
+        clickable: true,
+        draggable: false,
+      });
+
+      // 建立資訊視窗
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div class="flex items-center">
+            <img class="me-4 h-24 w-24 rounded-lg object-cover" src="${marker.img ? marker.img : "/img/store-default.jpg"}" alt="" />
+            <div class="font-normal">
+              <p class="text-base font-medium">${marker.name}</p>
+              <div>${marker.rating}</div>
+              <div>${marker.location}</div>
+              <div>${marker.price}~</div>
+            </div>
+          </div>
+        `,
+      });
+
+      // 當滑鼠移到標記上時顯示資訊視窗
+      gMarker.addListener("mouseover", () => {
+        infoWindow.open(map, gMarker);
+      });
+
+      // 當滑鼠移出標記時關閉資訊視窗
+      gMarker.addListener("mouseout", () => {
+        infoWindow.close();
+      });
+
+      // 點擊標記時導航至該店鋪
+      gMarker.addListener("click", () => {
+        // window.location.href = `/salon/${marker.id}`;
+
+        navigateTo({
+          path: `/salon/${marker.id}`,
+        });
+      });
+    });
+  }
 });
 
 definePageMeta({
@@ -154,76 +205,82 @@ definePageMeta({
 <template>
   <NuxtLayout name="salon">
     <template #content>
-      <!-- Skeleton -->
-      <div v-if="!isReady" class="h-[calc(100vh-96px)] lg:h-full">
-        <div role="status" class="mb-6 block max-w-sm animate-pulse lg:hidden">
-          <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
-          <div class="mb-2.5 h-2 max-w-[360px] rounded-full bg-primary"></div>
-          <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
-        </div>
-        <div
-          role="status"
-          class="w-[calc(100vw-2rem)] animate-pulse rounded-2xl border border-primary p-4 shadow md:p-6 lg:h-[calc(100vh-162px)]"
-        >
-          <div class="max-w-96 lg:mb-6">
-            <div
-              class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
-            >
-              <svg
-                class="h-10 w-10 text-primary"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 16 20"
-              >
-                <path
-                  d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
-                />
-                <path
-                  d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
-                />
-              </svg>
-            </div>
-            <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
-            <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
-            <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
-            <div class="h-2 rounded-full bg-primary"></div>
-            <div class="mt-4 flex items-center">
-              <div>
-                <div class="mb-2 h-2.5 w-32 rounded-full bg-primary"></div>
-                <div class="h-2 w-48 rounded-full bg-primary"></div>
-              </div>
-            </div>
-            <span class="sr-only">Loading...</span>
-          </div>
-          <div class="hidden max-w-96 lg:block">
-            <div
-              class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
-            >
-              <svg
-                class="h-10 w-10 text-primary"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 16 20"
-              >
-                <path
-                  d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
-                />
-                <path
-                  d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
-                />
-              </svg>
-            </div>
-            <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
-          </div>
-        </div>
-      </div>
-
       <div
-        v-else
-        class="relative w-full lg:h-[calc(100vh-130px-32px)] lg:overflow-hidden lg:rounded-3xl lg:border-2 lg:border-primary lg:p-6"
+        class="relative w-full lg:h-[calc(100vh-130px-32px)] lg:overflow-hidden lg:rounded-3xl lg:p-6"
+        :class="isReady ? 'lg:border-2 lg:border-primary' : ''"
       >
+        <!-- Skeleton -->
+        <div
+          v-if="!isReady"
+          class="absolute left-0 top-0 z-50 h-[calc(100vh-96px)] w-full rounded-3xl bg-primary-light lg:h-full lg:border-2 lg:border-primary"
+        >
+          <div
+            role="status"
+            class="mb-6 block max-w-sm animate-pulse lg:hidden"
+          >
+            <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+            <div class="mb-2.5 h-2 max-w-[360px] rounded-full bg-primary"></div>
+            <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+          </div>
+          <div
+            role="status"
+            class="w-[calc(100vw-2rem)] animate-pulse rounded-2xl border border-primary p-4 shadow md:p-6 lg:h-[calc(100vh-162px)] lg:border-0"
+          >
+            <div class="max-w-96 lg:mb-6">
+              <div
+                class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
+              >
+                <svg
+                  class="h-10 w-10 text-primary"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 20"
+                >
+                  <path
+                    d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
+                  />
+                  <path
+                    d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
+                  />
+                </svg>
+              </div>
+              <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+              <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+              <div class="mb-2.5 h-2 rounded-full bg-primary"></div>
+              <div class="h-2 rounded-full bg-primary"></div>
+              <div class="mt-4 flex items-center">
+                <div>
+                  <div class="mb-2 h-2.5 w-32 rounded-full bg-primary"></div>
+                  <div class="h-2 w-48 rounded-full bg-primary"></div>
+                </div>
+              </div>
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="hidden max-w-96 lg:block">
+              <div
+                class="mb-4 flex h-48 items-center justify-center rounded-2xl bg-primary"
+              >
+                <svg
+                  class="h-10 w-10 text-primary"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 20"
+                >
+                  <path
+                    d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"
+                  />
+                  <path
+                    d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"
+                  />
+                </svg>
+              </div>
+              <div class="mb-4 h-2.5 w-48 rounded-full bg-primary"></div>
+            </div>
+          </div>
+        </div>
+
         <div
           class="relative z-10 max-h-full w-full lg:w-1/2 lg:overflow-y-auto lg:rounded-3xl lg:bg-white lg:p-6 xl:w-[40%]"
         >
@@ -1224,9 +1281,16 @@ definePageMeta({
 
         <!-- Map -->
         <client-only>
+          <div
+            ref="mapDiv"
+            id="map"
+            class="absolute left-0 top-0 z-0 hidden h-full w-full lg:block"
+          ></div>
+        </client-only>
+
+        <!-- <client-only>
           <GMapMap
             v-if="isReady"
-            ref="mapRef"
             :center="center"
             :options="options"
             :zoom="13"
@@ -1261,7 +1325,7 @@ definePageMeta({
               </GMapInfoWindow>
             </GMapMarker>
           </GMapMap>
-        </client-only>
+        </client-only> -->
       </div>
     </template>
   </NuxtLayout>

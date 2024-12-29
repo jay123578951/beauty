@@ -14,8 +14,8 @@ export default {
 
   runtimeConfig: {
     public: {
-      mapApiKey: "AIzaSyDpXWj2tq9dlmSyUOJ2N0GDKIVeGfhChM4",
       apiUrl: process.env.API_URL || "http://localhost:3001",
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
     },
   },
 
@@ -31,7 +31,7 @@ export default {
 
   vite: {
     optimizeDeps: {
-      include: ["@fawmi/vue-google-maps", "fast-deep-equal", "pinia"],
+      include: ["fast-deep-equal", "pinia"],
     },
   },
 

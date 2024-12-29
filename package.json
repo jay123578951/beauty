@@ -10,12 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@fawmi/vue-google-maps": "^0.9.79",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@headlessui/vue": "^1.7.23",
     "@pinia/nuxt": "^0.7.0",
     "@popperjs/core": "^2.11.8",

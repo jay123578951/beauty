@@ -1,4 +1,14 @@
 <script setup>
+import { useScreens } from "vue-screen-utils";
+
+const { mapCurrent } = useScreens({
+  xs: "0px",
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+});
+const columns = mapCurrent({ lg: 2 }, 1);
+
 const popover = ref({
   visibility: "click",
   placement: "bottom",
@@ -75,7 +85,7 @@ function handleSubmit() {
         <div class="relative mt-1 rounded-md shadow-sm">
           <VDatePicker
             v-model.range="localFormValue.dateRange"
-            :columns="2"
+            :columns="columns"
             :popover="popover"
             @drag="dragValue = $event"
           >

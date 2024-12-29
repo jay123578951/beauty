@@ -81,16 +81,19 @@ async function logout() {
 
 const isHidden = ref(false);
 let lastScrollY = 0;
+const threshold = 64;
+
 const handleScroll = () => {
   const currentScrollY = window.scrollY;
 
-  if (currentScrollY > lastScrollY) {
-    isHidden.value = true;
-  } else {
-    isHidden.value = false;
+  if (Math.abs(currentScrollY - lastScrollY) > threshold) {
+    if (currentScrollY > lastScrollY) {
+      isHidden.value = true;
+    } else {
+      isHidden.value = false;
+    }
+    lastScrollY = currentScrollY;
   }
-
-  lastScrollY = currentScrollY;
 };
 
 onMounted(() => {

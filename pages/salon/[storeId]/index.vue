@@ -128,7 +128,7 @@ onMounted(() => {
 <template>
   <NuxtLayout name="store">
     <template #title>
-      <h1 class="mb-2 text-xl font-medium lg:mb-4 lg:text-3xl">ALBUM 台北</h1>
+      <h1 class="mb-2 text-2xl font-medium lg:mb-4 lg:text-3xl">ALBUM 台北</h1>
       <div class="flex justify-between">
         <p class="w-full text-sm lg:w-1/3 lg:text-base">
           我們致力於創造個性化的髮型，帶給顧客耳目一新的美髮體驗。我們的造型師團隊以專業技術和創意設計，幫助每位顧客展現最自信的自己。
@@ -500,7 +500,14 @@ onMounted(() => {
                 </ul>
               </div>
               <ul class="mb-6 space-y-4">
+                <p
+                  v-if="filteredMenus.length === 0"
+                  class="my-12 text-center text-sm text-gray-500"
+                >
+                  很抱歉目前沒有可以預約的方案。
+                </p>
                 <li
+                  v-else
                   v-for="(menu, index) in filteredMenus"
                   :key="index"
                   class="relative flex flex-col rounded-3xl border border-primary-light bg-white p-3 md:flex-row"
