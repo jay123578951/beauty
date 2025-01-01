@@ -150,7 +150,7 @@ onMounted(() => {
         >
           <!-- Carousel wrapper -->
           <div
-            class="relative h-56 overflow-hidden rounded-2xl md:h-[40vh] lg:h-[70vh]"
+            class="relative h-56 overflow-hidden rounded-2xl md:h-[40vh] xl:h-[70vh]"
           >
             <!-- Item 1 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
@@ -280,7 +280,7 @@ onMounted(() => {
               </Tab>
             </TabList>
           </div>
-          <div class="w-full lg:w-7/12">
+          <div class="w-full lg:w-8/12">
             <TabPanels>
               <!-- overview -->
               <TabPanel>
@@ -328,7 +328,14 @@ onMounted(() => {
                   </div>
                 </div>
                 <ul class="space-y-4">
+                  <p
+                    v-if="filteredMenus.length === 0"
+                    class="my-12 text-center text-sm text-gray-500"
+                  >
+                    很抱歉目前沒有可以預約的方案。
+                  </p>
                   <li
+                    v-else
                     v-for="(menu, index) in filteredMenus"
                     :key="index"
                     class="group relative flex space-x-4 rounded-2xl border border-primary-light bg-white p-3 hover:border-primary lg:rounded-3xl"

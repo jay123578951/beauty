@@ -206,7 +206,7 @@ definePageMeta({
   <NuxtLayout name="salon">
     <template #content>
       <div
-        class="relative w-full lg:h-[calc(100vh-130px-32px)] lg:overflow-hidden lg:rounded-3xl lg:p-6"
+        class="relative w-full lg:h-[calc(100vh-130px-48px)] lg:overflow-hidden lg:rounded-3xl lg:p-6 xl:h-[calc(100vh-130px-32px)]"
         :class="isReady ? 'lg:border-2 lg:border-primary' : ''"
       >
         <!-- Skeleton -->
@@ -611,7 +611,7 @@ definePageMeta({
             isRounded ? 'rounded-full' : 'rounded-3xl',
             isExpanded
               ? 'bottom-0 end-0 h-full w-full'
-              : 'bottom-[98px] end-4 h-[74px] w-[74px] lg:bottom-6 lg:end-6 lg:w-full',
+              : 'bottom-[98px] end-4 h-[74px] w-[74px] lg:bottom-[26px] lg:end-6 lg:w-full',
             'origin-bottom-right transition-all duration-300 ease-in-out',
             isReady ? 'visible opacity-100' : 'invisible opacity-0',
           ]"
@@ -1287,45 +1287,6 @@ definePageMeta({
             class="absolute left-0 top-0 z-0 hidden h-full w-full lg:block"
           ></div>
         </client-only>
-
-        <!-- <client-only>
-          <GMapMap
-            v-if="isReady"
-            :center="center"
-            :options="options"
-            :zoom="13"
-            class="absolute left-0 top-0 z-0 hidden h-full w-full lg:block"
-          >
-            <GMapMarker
-              v-for="(marker, index) in stores.data"
-              :key="index"
-              :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-              :clickable="true"
-              :draggable="false"
-              @click="goToStore(marker.id)"
-              @mouseover="openMarker(marker.id)"
-              @mouseout="openMarker(null)"
-            >
-              <GMapInfoWindow :opened="openedMarkerID === marker.id">
-                <NuxtLink :to="`/salon/${marker.id}`" class="flex items-center">
-                  <img
-                    class="me-4 h-24 w-24 rounded-lg object-cover"
-                    :src="marker.img ? marker.img : '/img/store-default.jpg'"
-                    alt=""
-                  />
-                  <div class="font-normal">
-                    <p class="text-base font-medium">
-                      {{ marker.name }}
-                    </p>
-                    <div>{{ marker.rating }}</div>
-                    <div>{{ marker.location }}</div>
-                    <div>{{ marker.price }}~</div>
-                  </div>
-                </NuxtLink>
-              </GMapInfoWindow>
-            </GMapMarker>
-          </GMapMap>
-        </client-only> -->
       </div>
     </template>
   </NuxtLayout>
