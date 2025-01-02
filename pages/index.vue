@@ -22,7 +22,7 @@ definePageMeta({
   <main class="px-4">
     <section class="relative mb-10 xl:mb-0 xl:min-h-screen">
       <div
-        class="background-main relative z-10 mb-8 flex flex-col items-center justify-between rounded-2xl bg-cover bg-local bg-center p-4 md:p-6 lg:min-h-[40vh] lg:rounded-3xl xl:min-h-[70vh]"
+        class="background-main relative mb-8 flex flex-col items-center justify-between rounded-2xl bg-cover bg-local bg-center p-4 md:p-6 lg:min-h-[40vh] lg:rounded-3xl xl:min-h-[70vh]"
       >
         <div class="w-full max-w-7xl py-4 font-light lg:py-12">
           <h1
@@ -52,7 +52,7 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
+      class="relative m-auto px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
     >
       <div>
         <div class="mb-10 md:w-1/2 lg:mb-20 xl:w-1/3">
@@ -237,7 +237,7 @@ definePageMeta({
     </section>
 
     <section
-      class="relative z-10 m-auto flex flex-col items-end px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
+      class="relative m-auto flex flex-col items-end px-4 pb-20 lg:max-w-4xl lg:px-0 lg:pb-40 xl:max-w-7xl"
     >
       <div class="xl:w-1/ mb-10 md:w-1/2 lg:mb-20">
         <h2 class="mb-2 text-2xl font-semibold lg:mb-4 lg:text-3xl">

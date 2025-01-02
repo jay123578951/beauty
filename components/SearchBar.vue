@@ -103,6 +103,7 @@ function handleSubmit() {
                 name="date"
                 id="date"
                 autocomplete="off"
+                readonly
                 class="block w-full rounded-md border border-gray-500 py-1.5 pl-4 pr-6 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-inset focus:ring-primary"
                 placeholder="不指定"
                 @click="togglePopover"

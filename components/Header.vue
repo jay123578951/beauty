@@ -6,13 +6,6 @@ import {
   PopoverGroup,
   PopoverPanel,
 } from "@headlessui/vue";
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/vue";
 
 const config = useRuntimeConfig();
 const apiUrl = config.public.apiUrl;

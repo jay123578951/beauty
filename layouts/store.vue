@@ -3,7 +3,7 @@
     <Header />
 
     <section class="m-4 lg:my-16">
-      <div class="m-auto w-full lg:max-w-4xl xl:max-w-7xl">
+      <div class="m-auto w-full lg:max-w-5xl xl:max-w-7xl">
         <slot name="title"></slot>
       </div>
     </section>
@@ -13,7 +13,7 @@
     </section>
 
     <section class="mx-4 mb-40">
-      <div class="m-auto w-full lg:max-w-4xl xl:max-w-7xl">
+      <div class="m-auto w-full lg:max-w-5xl xl:max-w-7xl">
         <slot name="content" />
       </div>
     </section>

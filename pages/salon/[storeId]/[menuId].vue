@@ -270,7 +270,7 @@ const error = ref(false);
 
 async function login() {
   try {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
+    const response = await fetch(`${apiUrl}/api/auth/login`, {
       method: "POST",
       body: JSON.stringify({
         username: loginFormValues.value.username,
@@ -874,7 +874,7 @@ definePageMeta({
             <!-- Step 3 -->
             <div v-if="step === 3" v-show="showStep3" key="step-3">
               <form
-                class="m-auto xl:max-w-md"
+                class="m-auto lg:max-w-md"
                 @submit.prevent="postSchedule(scheduleData)"
               >
                 <div class="mb-6 text-sm">
