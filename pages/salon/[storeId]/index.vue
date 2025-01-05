@@ -245,7 +245,7 @@ onMounted(() => {
       </div>
     </template>
     <template #content>
-      <TabGroup as="template">
+      <TabGroup as="template" :defaultIndex="1">
         <div class="hidden flex-col justify-between lg:flex lg:flex-row">
           <div class="w-full lg:w-3/12">
             <TabList
